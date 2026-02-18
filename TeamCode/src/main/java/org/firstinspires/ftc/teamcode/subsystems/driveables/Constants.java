@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.robotcore.hardware.IMU;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,5 +35,20 @@ public class Constants {
         Vector.motorsToVectorPositions.put(turningMotors.get(1), new Vector(1, 1));
         Vector.motorsToVectorPositions.put(turningMotors.get(2), new Vector(-1, -1));
         Vector.motorsToVectorPositions.put(turningMotors.get(3), new Vector(1, -1));
+    }
+    public static class TankConstants {
+
+        public static final String backLeftTankMotor = "backLeftTankMotor", backRightTankMotor = "backRightTankMotor";
+
+        public static Motor leftMotor, rightMotor;
+
+        public static void initConstants(Motor leftMotor, Motor rightMotor) {
+            TankConstants.leftMotor = leftMotor;
+            TankConstants.rightMotor = rightMotor;
+            leftMotor.stopAndResetEncoder();
+            leftMotor.setRunMode(Motor.RunMode.RawPower);
+            rightMotor.stopAndResetEncoder();
+            rightMotor.setRunMode(Motor.RunMode.RawPower);
+        }
     }
 }
