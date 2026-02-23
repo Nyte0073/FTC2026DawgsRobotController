@@ -1,0 +1,32 @@
+package org.firstinspires.ftc.teamcode.subsystems.driveables;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+
+import java.util.function.Supplier;
+
+public class MecanumDrive extends Mecanum {
+
+    private final com.arcrobotics.ftclib.drivebase.MecanumDrive mecanumDrive;
+
+    public MecanumDrive(Supplier<Vector> driverVectorSupplier, Supplier<Double> currentRobotOrientationSupplier, Motor[] motors) {
+        super(driverVectorSupplier, currentRobotOrientationSupplier);
+        mecanumDrive = new com.arcrobotics.ftclib.drivebase.MecanumDrive(motors[0], motors[1], motors[2], motors[3]);
+    }
+
+    @Override
+    public void stopMotors() {
+        System.out.println("Stopping motors.");
+    }
+
+    @Override
+    public void stopThreads() {
+        System.out.println("Stopping threads.");
+    }
+
+    @Override
+    public void calculateMotorPowers(double originalRobotAngle, Vector driverVector) {
+        double x = driverVector.getX();
+        double y = driverVector.getY();
+        double z = driverVector.getZ();
+        mecanumDrive.driveFieldCentric(x, y, z, originalRobotAngle);
+    }
+}

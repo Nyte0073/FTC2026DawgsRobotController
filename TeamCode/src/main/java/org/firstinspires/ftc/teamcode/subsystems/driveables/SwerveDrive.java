@@ -46,6 +46,6 @@ public class SwerveDrive extends Swerve {
 
     @Override
     public void stopMotors() {
-
+        System.out.println("Stopping motors.");
     }
 }

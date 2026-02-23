@@ -1,0 +1,31 @@
+package org.firstinspires.ftc.teamcode.teleops;
+
+import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.robotcore.hardware.IMU;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.commands.MecanumCommand;
+import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.driveables.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
+
+public class MecanumTeleop extends CommandOpMode {
+
+    @Override
+    public void initialize() {
+        GamepadEx gamepadEx = new GamepadEx(gamepad1);
+        Motor[] motors = new Motor[] {
+                new Motor(hardwareMap, Constants.MecanumConstants.frontLeftMecanumMotor),
+                new Motor(hardwareMap, Constants.MecanumConstants.frontRightMecanumMotor),
+                new Motor(hardwareMap, Constants.MecanumConstants.backLeftMecanumMotor),
+                new Motor(hardwareMap, Constants.MecanumConstants.backRightMecanumMotor)
+        };
+        IMU imu = hardwareMap.get(IMU.class, "imu");
+        Vector driverVector = new Vector();
+        MecanumDrive mecanumDrive = new MecanumDrive(() -> driverVector, () -> imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), motors);
+        MecanumCommand command = new MecanumCommand(driverVector, gamepadEx, mecanumDrive);
+        mecanumDrive.setDefaultCommand(command);
+    }
+}

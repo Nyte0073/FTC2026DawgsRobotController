@@ -8,7 +8,6 @@ public abstract class Tank extends SubsystemBase implements Driveable {
 
     private final Supplier<Double> driverYSupplier, driverXSupplier;
 
-
     public Tank(Supplier<Double> driverYSupplier, Supplier<Double> driverXSupplier) {
         this.driverYSupplier = driverYSupplier;
         this.driverXSupplier = driverXSupplier;

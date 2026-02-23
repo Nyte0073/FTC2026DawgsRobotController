@@ -5,6 +5,9 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.SwerveDrive;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 
+/**Class for commanding a Swerve Drive subsystem using four turning and driving motors. Make sure to set this
+ * class as a default command for the subsystem you're using it with to make its {@code execute()}
+ * method run and power the turning and driving motors automatically.*/
 public class SwerveCommand extends CommandBase {
 
     private final SwerveDrive swerveDrive;

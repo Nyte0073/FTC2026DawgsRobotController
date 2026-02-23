@@ -36,7 +36,7 @@ public class Constants {
         Vector.motorsToVectorPositions.put(turningMotors.get(2), new Vector(-1, -1));
         Vector.motorsToVectorPositions.put(turningMotors.get(3), new Vector(1, -1));
     }
-    public static class TankConstants {
+    public static final class TankConstants {
 
         public static final String backLeftTankMotor = "backLeftTankMotor", backRightTankMotor = "backRightTankMotor";
 
@@ -49,6 +49,21 @@ public class Constants {
             leftMotor.setRunMode(Motor.RunMode.RawPower);
             rightMotor.stopAndResetEncoder();
             rightMotor.setRunMode(Motor.RunMode.RawPower);
+        }
+    }
+
+    public static final class MecanumConstants {
+
+        public static final String frontLeftMecanumMotor = "frontLeftMecanumMotor", frontRightMecanumMotor = "frontRightMecanumMotor",
+        backLeftMecanumMotor = "backLeftMecanumMotor", backRightMecanumMotor = "backRightMecanumMotor";
+
+        public static Motor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+
+        public static void initConstants(Motor frontLeftMotor, Motor frontRightMotor, Motor backLeftMotor, Motor backRightMotor) {
+            MecanumConstants.frontLeftMotor = frontLeftMotor;
+            MecanumConstants.frontRightMotor = frontRightMotor;
+            MecanumConstants.backLeftMotor = backLeftMotor;
+            MecanumConstants.backRightMotor = backRightMotor;
         }
     }
 }
