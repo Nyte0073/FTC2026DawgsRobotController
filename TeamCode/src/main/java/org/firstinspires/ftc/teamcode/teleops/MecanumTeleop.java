@@ -22,6 +22,7 @@ public class MecanumTeleop extends CommandOpMode {
                 new Motor(hardwareMap, Constants.MecanumConstants.backLeftMecanumMotor),
                 new Motor(hardwareMap, Constants.MecanumConstants.backRightMecanumMotor)
         };
+        Constants.MecanumConstants.initConstants(motors[0], motors[1], motors[2], motors[3]);
         IMU imu = hardwareMap.get(IMU.class, "imu");
         Vector driverVector = new Vector();
         MecanumDrive mecanumDrive = new MecanumDrive(() -> driverVector, () -> imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), motors);

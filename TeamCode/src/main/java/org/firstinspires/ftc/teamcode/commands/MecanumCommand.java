@@ -11,14 +11,14 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
  * that it's {@code execute()} method runs automatically every command scheduler cycle.*/
 public class MecanumCommand extends CommandBase {
 
-    /*Representing human driver controller x and y input.*/
+    /**Representing human driver controller x and y input.*/
     private final Vector driverVector;
 
-    /*Reference to human driver's controller.*/
+    /**Reference to human driver's controller.*/
     private final GamepadEx gamepadEx;
 
-    /*Reference to internal drivetrain system controlling the four mecanum wheels of the
-    * robot.*/
+    /**Reference to internal drivetrain system controlling the four mecanum wheels of the
+     * robot.*/
     private final MecanumDrive mecanumDrive;
 
     /**Constructs a new {@code MecanumCommand()} with initialized {@code driverVector} (Vector),

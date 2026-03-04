@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import java.util.function.Supplier;
 
 public class MecanumDrive extends Mecanum {
 
+    /**Reference to the four wheels of the mecanum drive.*/
     private final com.arcrobotics.ftclib.drivebase.MecanumDrive mecanumDrive;
 
+    /**Constructs a new {@code MecanumDrive()} with initialized {@code driverVector} Supplier, {@code currentRobotOrientation} Supplier,
+     * and */
     public MecanumDrive(Supplier<Vector> driverVectorSupplier, Supplier<Double> currentRobotOrientationSupplier, Motor[] motors) {
         super(driverVectorSupplier, currentRobotOrientationSupplier);
         mecanumDrive = new com.arcrobotics.ftclib.drivebase.MecanumDrive(motors[0], motors[1], motors[2], motors[3]);

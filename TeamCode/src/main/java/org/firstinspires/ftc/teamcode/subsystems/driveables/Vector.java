@@ -26,7 +26,20 @@ public class Vector {
         setZ(z);
     }
 
+    public void update(double x, double y) {
+        setX(x);
+        setY(y);
+    }
+
     public Vector() {}
+
+    @Override
+    public boolean equals(Object o) {
+        Vector v = (Vector) o;
+        double x = v.getX();
+        double y = v.getY();
+        return Math.abs(x - getX()) <= Constants.tolerance && Math.abs(y - getY()) <= Constants.tolerance;
+    }
 
     public void setZ(double z) {
         this.z = z;

@@ -22,8 +22,9 @@ public class TankTeleop extends CommandOpMode {
         GamepadEx gamepadEx = new GamepadEx(gamepad1);
         Supplier<Double> xSupplier = gamepadEx::getLeftX,
         ySupplier = () -> -gamepadEx.getLeftY();
-        TankDrive tankDrive = new TankDrive(ySupplier, xSupplier);
+        TankDrive tankDrive = new TankDrive(ySupplier, xSupplier, telemetry);
         TankCommand tankCommand = new TankCommand(tankDrive);
+        tankCommand.addRequirements(tankDrive);
         tankDrive.setDefaultCommand(tankCommand);
     }
 }

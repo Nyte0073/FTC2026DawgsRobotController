@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.SwerveDrive;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -20,26 +21,23 @@ public class SwerveTeleop extends CommandOpMode {
 
     @Override
     public void initialize() {
-        List<Motor> drivingMotors = List.of(
-                new Motor(hardwareMap, Constants.frontLeftDrivingMotorID),
-                new Motor(hardwareMap, Constants.frontRightDrivingMotorID),
-                new Motor(hardwareMap, Constants.backLeftDrivingMotorID),
-                new Motor(hardwareMap, Constants.backRightDrivingMotorID)
-        ), rotatingMotors = List.of(
-                new Motor(hardwareMap, Constants.frontLeftRotatingMotorID),
-                new Motor(hardwareMap, Constants.frontRightRotatingMotorID),
-                new Motor(hardwareMap, Constants.backLeftRotatingMotorID),
-                new Motor(hardwareMap, Constants.backRightRotatingMotorID)
+        List<Motor> drivingMotors = new ArrayList<>()
+        , rotatingMotors = List.of(
+                new Motor(hardwareMap, Constants.SwerveConstants.frontLeftRotatingMotorID),
+                new Motor(hardwareMap, Constants.SwerveConstants.frontRightRotatingMotorID),
+                new Motor(hardwareMap, Constants.SwerveConstants.backLeftRotatingMotorID),
+                new Motor(hardwareMap, Constants.SwerveConstants.backRightRotatingMotorID)
         );
         IMU imu = hardwareMap.get(IMU.class, "imu");
         GamepadEx gamepadEx = new GamepadEx(gamepad1);
-        Constants.initConstants(drivingMotors, rotatingMotors);
+        Constants.SwerveConstants.initConstants(drivingMotors, rotatingMotors);
 
         Vector driverVector = new Vector();
         Supplier<Vector> driverVectorSupplier = () -> driverVector;
         Supplier<Double> currentIMUOrientationSupplier = () -> imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        SwerveDrive swerveDrive = new SwerveDrive(driverVectorSupplier, currentIMUOrientationSupplier);
+        SwerveDrive swerveDrive = new SwerveDrive(driverVectorSupplier, currentIMUOrientationSupplier, telemetry);
         SwerveCommand swerveCommand = new SwerveCommand(swerveDrive, gamepadEx, driverVector);
+        swerveCommand.addRequirements(swerveDrive);
         swerveDrive.setDefaultCommand(swerveCommand);
     }
 }

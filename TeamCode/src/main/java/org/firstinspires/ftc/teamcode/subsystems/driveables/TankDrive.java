@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.util.function.Supplier;
 
+/***/
 public class TankDrive extends Tank {
 
-    public TankDrive(Supplier<Double> driverYSupplier, Supplier<Double> driverXSupplier) {
-        super(driverYSupplier, driverXSupplier);
+    public TankDrive(Supplier<Double> driverYSupplier, Supplier<Double> driverXSupplier, Telemetry telemetry) {
+        super(driverYSupplier, driverXSupplier, telemetry);
     }
 
     @Override
