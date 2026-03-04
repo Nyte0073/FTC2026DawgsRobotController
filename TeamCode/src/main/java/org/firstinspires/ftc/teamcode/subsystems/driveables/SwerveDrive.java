@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+@SuppressWarnings("all")
 public final class SwerveDrive extends Swerve {
 
     public SwerveDrive(Supplier<Vector> driverVectorSupplier, Supplier<Double> currentOrientationSupplier, Telemetry telemetry) {

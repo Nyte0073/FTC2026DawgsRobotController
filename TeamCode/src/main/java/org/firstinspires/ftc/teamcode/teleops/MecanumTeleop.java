@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleops;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -26,9 +27,18 @@ public final class MecanumTeleop extends CommandOpMode {
         };
         Constants.MecanumConstants.initConstants(motors[0], motors[1], motors[2], motors[3]);
         IMU imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
+        imu.initialize(parameters);
+        imu.resetYaw();
         Vector driverVector = new Vector();
         MecanumDrive mecanumDrive = new MecanumDrive(() -> driverVector, () -> imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), motors);
         MecanumCommand command = new MecanumCommand(driverVector, gamepadEx, mecanumDrive);
+        command.addRequirements(mecanumDrive);
         mecanumDrive.setDefaultCommand(command);
+    }
+
+    @Override
+    public void run() {
+        telemetry.update();
     }
 }

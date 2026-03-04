@@ -117,6 +117,9 @@ public final class Constants {
             MecanumConstants.frontRightMotor = frontRightMotor;
             MecanumConstants.backLeftMotor = backLeftMotor;
             MecanumConstants.backRightMotor = backRightMotor;
+            MecanumConstants.frontLeftMotor.setInverted(true);
+            MecanumConstants.backLeftMotor.setInverted(true);
+            MecanumConstants.backRightMotor.setInverted(true);
         }
     }
 }
