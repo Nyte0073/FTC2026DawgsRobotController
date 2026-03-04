@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleops;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -11,7 +12,8 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 
-public class MecanumTeleop extends CommandOpMode {
+@TeleOp(name = "MecanumTeleop", group = "teamcode")
+public final class MecanumTeleop extends CommandOpMode {
 
     @Override
     public void initialize() {

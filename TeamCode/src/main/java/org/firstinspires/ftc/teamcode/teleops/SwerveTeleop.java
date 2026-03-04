@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @TeleOp(group = "teamcode", name = "SwerveTeleop")
-public class SwerveTeleop extends CommandOpMode {
+public final class SwerveTeleop extends CommandOpMode {
 
     @Override
     public void initialize() {

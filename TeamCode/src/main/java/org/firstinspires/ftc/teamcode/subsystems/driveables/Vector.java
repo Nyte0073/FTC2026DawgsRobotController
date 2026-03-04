@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-public class Vector {
+public final class Vector {
 
     public static final Map<Motor, Vector> motorsToVectorPositions = new HashMap<>();
     public static final BiFunction<Double, Double, Vector> rotate90DegreesClockwise = (x, y) ->

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-public class Constants {
+public final class Constants {
     /**The amount of ticks the motor encoders count every full rotation of the wheel.*/
     public static final int ticksPerRev = 1440;
 
@@ -61,7 +61,7 @@ public class Constants {
                 motor.setRunMode(Motor.RunMode.RawPower);
             }
             for(Motor motor : turningMotors) {
-                motor.resetEncoder();
+                motor.stopAndResetEncoder();
                 motor.setRunMode(Motor.RunMode.PositionControl);
             }
             if(!drivingMotors.isEmpty()) {
@@ -85,15 +85,23 @@ public class Constants {
         public static final Vector FIRST_AUTO_POSITION = new Vector(0, 0),
         SECOND_AUTO_POSITION = new Vector(0, 0);
 
-        public static void initConstants(Motor leftMotor, Motor rightMotor) {
+        public static void initConstants(Motor leftMotor, Motor rightMotor, boolean auto) {
             TankConstants.leftMotor = leftMotor;
             TankConstants.rightMotor = rightMotor;
             leftMotor.stopAndResetEncoder();
             rightMotor.stopAndResetEncoder();
             rightMotor.setInverted(true);
 
-            TankConstants.leftMotor.setRunMode(Motor.RunMode.RawPower);
-            TankConstants.rightMotor.setRunMode(Motor.RunMode.RawPower);
+            if(auto) {
+               TankConstants.leftMotor.setRunMode(Motor.RunMode.PositionControl);
+               TankConstants.rightMotor.setRunMode(Motor.RunMode.PositionControl);
+            } else {
+                TankConstants.leftMotor.setRunMode(Motor.RunMode.RawPower);
+                TankConstants.rightMotor.setRunMode(Motor.RunMode.RawPower);
+            }
+
+            TankConstants.leftMotor.setPositionTolerance(tolerance);
+            TankConstants.rightMotor.setPositionTolerance(tolerance);
         }
     }
 

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.driveables;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import java.util.function.Supplier;
 
-public class MecanumDrive extends Mecanum {
+public final class MecanumDrive extends Mecanum {
 
     /**Reference to the four wheels of the mecanum drive.*/
     private final com.arcrobotics.ftclib.drivebase.MecanumDrive mecanumDrive;

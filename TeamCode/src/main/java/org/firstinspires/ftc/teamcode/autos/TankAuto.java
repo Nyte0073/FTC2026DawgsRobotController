@@ -6,7 +6,6 @@ import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.Tan
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -18,15 +17,15 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
  * the auto positions reflect the robot's true starting position, so that the program can calculate
  * the correct distances for the robot to get to target positions.*/
 @Autonomous(name = "TankAuto", group = "teamcode")
-public class TankAuto extends CommandOpMode {
+public final class TankAuto extends CommandOpMode {
     @Override
     public void initialize() {
         IMU imu = hardwareMap.get(IMU.class, "imu");
-        Constants.TankConstants.initConstants(leftMotor, rightMotor);
+        Constants.TankConstants.initConstants(leftMotor, rightMotor, true);
         schedule(new SequentialCommandGroup(
-                new TravelTo(new Vector(), 0, imu),
-                new TravelTo(new Vector(), 0, imu),
-                new TravelTo(new Vector(), 0, imu)
+                new TravelTo(new Vector(2, 2), imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), imu),
+                new TravelTo(new Vector(3, 7), imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), imu),
+                new TravelTo(new Vector(5, 7), imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), imu)
         ));
     }
 
@@ -69,7 +68,6 @@ public class TankAuto extends CommandOpMode {
 
         @Override
         public void initialize() {
-            leftMotor.setPositionTolerance(4);
             stopMotors();
             resetEncoders();
             calculatedTargetPositionVector = Constants.robotCoordinatesAndTargetToCoordinates.apply(Constants.TankConstants.FIRST_AUTO_POSITION
@@ -77,7 +75,6 @@ public class TankAuto extends CommandOpMode {
             turnTo(Math.toDegrees(Math.atan2(calculatedTargetPositionVector.getY(), calculatedTargetPositionVector.getX())));
             stopMotors();
             resetEncoders();
-            setRunMode(Motor.RunMode.PositionControl);
             int targetPosition = (int) calculatedTargetPositionVector.getX();
             leftMotor.setTargetPosition(targetPosition);
             rightMotor.setTargetPosition(targetPosition);
@@ -128,13 +125,10 @@ public class TankAuto extends CommandOpMode {
             leftMotor.resetEncoder();
             rightMotor.resetEncoder();
         }
-
-        public void setRunMode(Motor.RunMode runMode) {
-            leftMotor.setRunMode(runMode);
-            rightMotor.setRunMode(runMode);
-        }
     }
 
+    /*TODO This class is still in progress, and still needs to be
+       finished with real hardware-software connection.*/
     public static final class ScorePiece extends CommandBase {
 
         @Override

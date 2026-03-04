@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables;
 
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.degreePercentageToDegrees;
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.ticksPerRev;
+
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
@@ -26,11 +29,11 @@ public abstract class Swerve extends SubsystemBase implements Driveable {
         double currentIMUOrientation = currentIMUOrientationSupplier.get();
         boolean rotating = driverVector.getZ() >= 0.1;
         Map<Motor, Double> calculatedWheelHeadings = calculateSwerveHeadings(driverVector, currentIMUOrientation, rotating, true);
-        double magnitudeDivisor = Constants.SwerveConstants.motorsAndTheirRotatedAndTranslatedVectors.values().stream().mapToDouble(Vector::getMagnitude).max().orElse(1);
+        double magnitudeDivisor = Math.max(Constants.SwerveConstants.motorsAndTheirRotatedAndTranslatedVectors.values().stream().mapToDouble(Vector::getMagnitude).max().orElse(1), 1);
         for(Motor motor : Constants.SwerveConstants.turningMotors) {
-            double currentPositionDegrees = (double) motor.getCurrentPosition() / 1440 * 360;
+            double currentPositionDegrees = (double) motor.getCurrentPosition() / ticksPerRev * degreePercentageToDegrees;
             double calculatedWheelHeading = calculatedWheelHeadings.get(motor);
-            motor.setTargetPosition((int) (((currentPositionDegrees + calculatedWheelHeading) / 360) * 1440));
+            motor.setTargetPosition((int) (((currentPositionDegrees + calculatedWheelHeading) / degreePercentageToDegrees) * ticksPerRev));
             motor.set(0.7);
         }
         if(!Constants.SwerveConstants.drivingMotors.isEmpty()) {
@@ -45,6 +48,7 @@ public abstract class Swerve extends SubsystemBase implements Driveable {
                 }
             }
         }
+        periodic();
     }
 
     @Override
@@ -52,7 +56,7 @@ public abstract class Swerve extends SubsystemBase implements Driveable {
         stopMotors();
     }
     public double normalizeHeading(double targetPos, double currentPos) {
-        return (targetPos - currentPos + 540) % 360 - 180;
+        return (targetPos - currentPos + 540) % degreePercentageToDegrees - 180;
     }
     public double reverseHeading(double targetPos, double totalPos, double originalPos) {
         return Math.abs(totalPos) > 180 ? normalizeHeading(

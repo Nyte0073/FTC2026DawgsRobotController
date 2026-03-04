@@ -12,13 +12,13 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.TankDrive;
 import java.util.function.Supplier;
 
 @TeleOp(name = "TankTeleop", group = "teamcode")
-public class TankTeleop extends CommandOpMode {
+public final class TankTeleop extends CommandOpMode {
 
     @Override
     public void initialize() {
         Motor leftMotor = new Motor(hardwareMap, Constants.TankConstants.backLeftTankMotor);
         Motor rightMotor = new Motor(hardwareMap, Constants.TankConstants.backRightTankMotor);
-        Constants.TankConstants.initConstants(leftMotor, rightMotor);
+        Constants.TankConstants.initConstants(leftMotor, rightMotor, false);
         GamepadEx gamepadEx = new GamepadEx(gamepad1);
         Supplier<Double> xSupplier = gamepadEx::getLeftX,
         ySupplier = () -> -gamepadEx.getLeftY();

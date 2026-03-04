@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 /**Class for commanding a Swerve Drive subsystem using four turning and driving motors. Make sure to set this
  * class as a default command for the subsystem you're using it with to make its {@code execute()}
  * method run and power the turning and driving motors automatically.*/
-public class SwerveCommand extends CommandBase {
+public final class SwerveCommand extends CommandBase {
 
     /**Reference the drivetrain object containing all the swerve motor implementation software for powering
      * and updating the motors and their states.*/

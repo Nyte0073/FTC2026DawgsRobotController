@@ -5,7 +5,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.function.Supplier;
 
 /***/
-public class TankDrive extends Tank {
+public final class TankDrive extends Tank {
 
     public TankDrive(Supplier<Double> driverYSupplier, Supplier<Double> driverXSupplier, Telemetry telemetry) {
         super(driverYSupplier, driverXSupplier, telemetry);

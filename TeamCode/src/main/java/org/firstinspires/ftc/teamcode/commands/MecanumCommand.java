@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 /**Class for commanding a Mecanum Drive subsystem to drive around using four mecanum wheels.
  * Make sure to set this class as a default command for the subsystem you are using it with so
  * that it's {@code execute()} method runs automatically every command scheduler cycle.*/
-public class MecanumCommand extends CommandBase {
+public final class MecanumCommand extends CommandBase {
 
     /**Representing human driver controller x and y input.*/
     private final Vector driverVector;
