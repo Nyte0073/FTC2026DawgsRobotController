@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables;
 
+import android.util.Log;
+
 import com.arcrobotics.ftclib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -24,11 +26,14 @@ public abstract class Mecanum extends SubsystemBase implements Driveable {
         telemetry.addData("Current Robot Orientation: ", currentRobotOrientationSupplier.get());
         telemetry.addData("X: ", driverVector.getX());
         telemetry.addData("Y: ", driverVector.getY());
-    }
+        Log.i(getName(), "Periodic running.");
+        telemetry.update();
+}
 
-    @Override
+@Override
     public void drive() {
         Vector driverVector = driverVectorSupplier.get();
+        Log.i(getName(), "Calculating motor owers.");
         calculateMotorPowers(currentRobotOrientationSupplier.get(), driverVector);
     }
 

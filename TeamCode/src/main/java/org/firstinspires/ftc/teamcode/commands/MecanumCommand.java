@@ -31,7 +31,7 @@ public final class MecanumCommand extends CommandBase {
 
     @Override
     public void execute() {
-        driverVector.setX(gamepadEx.getLeftX());
+        driverVector.setX(-gamepadEx.getLeftX());
         driverVector.setY(-gamepadEx.getLeftY());
         driverVector.setZ(gamepadEx.getRightX());
         mecanumDrive.drive();

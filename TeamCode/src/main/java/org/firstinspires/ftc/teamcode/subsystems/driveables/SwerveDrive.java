@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables;
 
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.deadZoneTolerance;
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.degreePercentageToDegrees;
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.ticksPerRev;
+import static org.firstinspires.ftc.teamcode.subsystem_math.SwerveMath.calculateFinalNormalizedHeading;
+import static org.firstinspires.ftc.teamcode.subsystem_math.SwerveMath.calculateTranslatedAndRotatedVector;
+import static org.firstinspires.ftc.teamcode.subsystem_math.SwerveMath.driverVectorIsTooSmall;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
@@ -26,31 +26,18 @@ public final class SwerveDrive extends Swerve {
 
     @Override
     public Map<Motor, Double> calculateSwerveHeadings(Vector driverVector, double originalPose, boolean rotating, boolean clockwise) {
-        if(Math.abs(driverVector.getY()) <= deadZoneTolerance && Math.abs(driverVector.getX()) <= deadZoneTolerance && Math.abs(driverVector.getZ()) <= deadZoneTolerance) {
+        if(driverVectorIsTooSmall(driverVector)) {
             driverVector = new Vector(0, 0, 0);
         }
         Map<Motor, Double> returnedMap = new HashMap<>();
         for(Motor turningMotor : Constants.SwerveConstants.turningMotors) {
-            double currentPosition = turningMotor.getCurrentPosition();
-            double absolutePosition = originalPose + currentPosition;
-            Vector rotatedPositionVector, translatedAndRotatedVector;
-            Vector positionVector = Vector.motorsToVectorPositions.get(turningMotor);
-            if(rotating) {
-                if(clockwise) {
-                    rotatedPositionVector = Vector.rotate90DegreesClockwise.apply(positionVector.getX(), positionVector.getY()).times(driverVector.getZ());
-                } else {
-                    rotatedPositionVector = Vector.rotate90DegreesCounterclockwise.apply(positionVector.getX(), positionVector.getY()).times(driverVector.getZ());
-                }
-            } else {
-                rotatedPositionVector = new Vector(0, 0, 0);
-            }
-            translatedAndRotatedVector = driverVector.plus(rotatedPositionVector);
+            Vector translatedAndRotatedVector = calculateTranslatedAndRotatedVector(Vector.motorsToVectorPositions.get(turningMotor),
+                    rotating, clockwise, driverVector);
             Constants.SwerveConstants.motorsAndTheirRotatedAndTranslatedVectors.put(turningMotor, translatedAndRotatedVector);
-            double targetAngle = driverVector.getMagnitude() <= 0.03 ? (double) turningMotor.getCurrentPosition() / ticksPerRev * degreePercentageToDegrees :
-                    Math.toDegrees(Math.atan2(translatedAndRotatedVector.getY(), translatedAndRotatedVector.getX())) - 90;
-            double normalizedHeading = normalizeHeading(targetAngle, absolutePosition);
-            double totalHeading = currentPosition + normalizedHeading;
-            double reversedHeading = reverseHeading(targetAngle, totalHeading, currentPosition);
+            double currentPosition = turningMotor.getCurrentPosition();
+            double absolutePosition = currentPosition + originalPose;
+            double reversedHeading = calculateFinalNormalizedHeading(driverVector, translatedAndRotatedVector, turningMotor, currentPosition
+                    , absolutePosition);
             returnedMap.put(turningMotor, reversedHeading);
         }
         return returnedMap;

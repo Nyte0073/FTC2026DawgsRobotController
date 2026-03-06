@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables;
 
+import static org.firstinspires.ftc.teamcode.subsystem_math.TankMath.calculateMotorPower;
+import static org.firstinspires.ftc.teamcode.subsystem_math.TankMath.clamp;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.function.Supplier;
@@ -23,11 +26,7 @@ public final class TankDrive extends Tank {
 
     @Override
     public double[] calculateMotorPowers(double y, double x) {
-       return clamp(y + x, y - x);
-    }
-
-    public double[] clamp(double v1, double v2) {
-        double biggerNumber = Math.max(1, Math.max(Math.abs(v1), Math.abs(v2)));
-        return new double[] {v1 / biggerNumber, v2 / biggerNumber};
+        double[] motorPowers = calculateMotorPower(x, y);
+        return clamp(motorPowers[0], motorPowers[1]);
     }
 }

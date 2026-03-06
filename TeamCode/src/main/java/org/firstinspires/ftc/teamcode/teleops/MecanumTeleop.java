@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
+import android.util.Log;
+
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -31,14 +33,10 @@ public final class MecanumTeleop extends CommandOpMode {
         imu.initialize(parameters);
         imu.resetYaw();
         Vector driverVector = new Vector();
-        MecanumDrive mecanumDrive = new MecanumDrive(() -> driverVector, () -> imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), motors);
+        MecanumDrive mecanumDrive = new MecanumDrive(() -> driverVector, () -> imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), motors, telemetry);
         MecanumCommand command = new MecanumCommand(driverVector, gamepadEx, mecanumDrive);
         command.addRequirements(mecanumDrive);
         mecanumDrive.setDefaultCommand(command);
     }
 
-    @Override
-    public void run() {
-        telemetry.update();
-    }
 }

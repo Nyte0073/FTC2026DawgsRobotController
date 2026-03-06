@@ -44,13 +44,22 @@ public final class Constants {
          driving motor's magnitude (motor power) a direction to then turn into a vector to add to the robot's final translation vector.*/
                 turningMotors = new ArrayList<>();
 
-                /***/
+                /**Maps each turning motor to their respective calculated rotated and translated vector.*/
         public static final Map<Motor, Vector> motorsAndTheirRotatedAndTranslatedVectors = new HashMap<>();
+
+        /**Maps each turning motor to its respective driving motor within its specific module.*/
         public static final Map<Motor, Motor> turningDrivingMotorsMap = new HashMap<>();
+
+        /*String constants for the id's of all the motors being used with the swerve drivetrain.*/
         public static final String frontLeftDrivingMotorID = "frontLeftDriving", frontRightDrivingMotorID = "frontRightDriving",
                 backLeftDrivingMotorID = "backLeftDriving", backRightDrivingMotorID = "backRightDriving", frontLeftRotatingMotorID = "frontLeftRotating",
                 frontRightRotatingMotorID = "frontRightRotating", backLeftRotatingMotorID = "backLeftRotating", backRightRotatingMotorID = "backRightRotating";
 
+        /**Initializes the turning and driving motors so that they are ready to go as soon as the SwerveCommand implementation starts
+         *executing. This method stops and resets all the motors' encoders, sets the {@code RunMode} of the turning motors to PositionControl
+         * for encoder based rotation, and sets the {@code RunMode} for the driving motors to RawPower so that they can rotate freely while
+         * depending on motor power for angular speed. This method also fills the {@code turningDrivingMotorsMap} and {@code motorToVectorPositions}
+         * hashmaps with maps between the different motors and them and their different motor positions relative to the center of the robot. */
         public static void initConstants(List<Motor> drivingMotors, List<Motor> turningMotors) {
             if(!drivingMotors.isEmpty()) {
                 SwerveConstants.drivingMotors.addAll(drivingMotors);
@@ -78,13 +87,25 @@ public final class Constants {
         }
     }
 
+    /**Class containing all the constant values for running and initializing a tank drivetrain.*/
     public static final class TankConstants {
 
+        /*String id's for the motors being used in the drivetrain.*/
         public static final String backLeftTankMotor = "backLeftTankMotor", backRightTankMotor = "backRightTankMotor";
+
+        /*References to the back left and back right driving motors on the tank drivetrain.*/
         public static Motor leftMotor, rightMotor;
+
+        /**Represents the x and y coordinates of the first optional position the robot can start at during auto.*/
         public static final Vector FIRST_AUTO_POSITION = new Vector(0, 0),
+
+        /**Represents the x and y coordinates of the second optional position the robot can start at during auto.*/
         SECOND_AUTO_POSITION = new Vector(0, 0);
 
+        /**Initializes the back left and back right driving motors of the tank drivetrain, depending on if they are in auto
+         * or teleop. This method will reset the motors' encoders, while also setting their {@code RunMode}'s to either RawPower
+         * or PositionControl based on if the stage is Teleop or Auto, and sets the motor tolerances to 5 so the motors have a bit of
+         * leeway when rotating to a certain amount of ticks when using PositionControl.*/
         public static void initConstants(Motor leftMotor, Motor rightMotor, boolean auto) {
             TankConstants.leftMotor = leftMotor;
             TankConstants.rightMotor = rightMotor;
@@ -105,13 +126,18 @@ public final class Constants {
         }
     }
 
+    /**Class containing all the constant values and mutable objects used to run and initialize a Mecanum
+     drivetrain.*/
     public static final class MecanumConstants {
 
+        /*String id's for the motors used on the mecanum drivetrain.*/
         public static final String frontLeftMecanumMotor = "frontLeftMecanumMotor", frontRightMecanumMotor = "frontRightMecanumMotor",
                 backLeftMecanumMotor = "backLeftMecanumMotor", backRightMecanumMotor = "backRightMecanumMotor";
 
+        /*References to all four mecanum motors being used to control the drivetrain.*/
         public static Motor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
 
+        /**Initializes the mecanum motors by setting them all inverted and filling their mutable references.*/
         public static void initConstants(Motor frontLeftMotor, Motor frontRightMotor, Motor backLeftMotor, Motor backRightMotor) {
             MecanumConstants.frontLeftMotor = frontLeftMotor;
             MecanumConstants.frontRightMotor = frontRightMotor;
@@ -120,6 +146,7 @@ public final class Constants {
             MecanumConstants.frontLeftMotor.setInverted(true);
             MecanumConstants.backLeftMotor.setInverted(true);
             MecanumConstants.backRightMotor.setInverted(true);
+            MecanumConstants.frontRightMotor.setInverted(true);
         }
     }
 }
