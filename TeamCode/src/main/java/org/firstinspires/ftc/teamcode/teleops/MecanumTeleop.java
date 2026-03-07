@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
-import android.util.Log;
-
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;

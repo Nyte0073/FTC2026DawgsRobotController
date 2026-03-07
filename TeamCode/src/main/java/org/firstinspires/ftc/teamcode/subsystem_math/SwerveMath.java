@@ -32,7 +32,7 @@ public final class SwerveMath {
     public static boolean driverVectorIsTooSmall(Vector driverVector) {
         return Math.abs(driverVector.getX()) <= deadZoneTolerance &&
                 Math.abs(driverVector.getY()) <= deadZoneTolerance &&
-                Math.abs(driverVector.getZ()) <=deadZoneTolerance;
+                Math.abs(driverVector.getZ()) <= deadZoneTolerance;
     }
 
     /**Calculates the translated and rotated vector that is the result of combining a rotated position vector mapped to any one of the
@@ -70,7 +70,7 @@ public final class SwerveMath {
      * because the turning motor has the right orientation just in the opposite direction. But if the total rotation is less than 180, then
      * no reversing needs to happen this method will just return the target heading as normal.*/
     public static double reverseHeading(double target, double current, double totalPos) {
-        return Math.abs(totalPos) < 0 ?  normalizeHeading(totalPos < 0 ? totalPos + 180 : totalPos - 180, current) :
+        return Math.abs(totalPos) > 180 ?  normalizeHeading(totalPos < 0 ? totalPos + 180 : totalPos - 180, current) :
                 target;
     }
 }

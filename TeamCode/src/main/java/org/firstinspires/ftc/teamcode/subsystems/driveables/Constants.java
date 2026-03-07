@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 public final class Constants {
+
     /**The amount of ticks the motor encoders count every full rotation of the wheel.*/
     public static final int ticksPerRev = 1440;
 

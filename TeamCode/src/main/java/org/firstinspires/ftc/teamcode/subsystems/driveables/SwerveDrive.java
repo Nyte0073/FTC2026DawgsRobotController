@@ -20,11 +20,6 @@ public final class SwerveDrive extends Swerve {
     }
 
     @Override
-    public void periodic() {
-        System.out.println("Something is right with this code.");
-    }
-
-    @Override
     public Map<Motor, Double> calculateSwerveHeadings(Vector driverVector, double originalPose, boolean rotating, boolean clockwise) {
         if(driverVectorIsTooSmall(driverVector)) {
             driverVector = new Vector(0, 0, 0);
@@ -36,8 +31,8 @@ public final class SwerveDrive extends Swerve {
             Constants.SwerveConstants.motorsAndTheirRotatedAndTranslatedVectors.put(turningMotor, translatedAndRotatedVector);
             double currentPosition = turningMotor.getCurrentPosition();
             double absolutePosition = currentPosition + originalPose;
-            double reversedHeading = calculateFinalNormalizedHeading(driverVector, translatedAndRotatedVector, turningMotor, currentPosition
-                    , absolutePosition);
+            double reversedHeading = calculateFinalNormalizedHeading(driverVector, translatedAndRotatedVector, turningMotor, currentPosition,
+                    absolutePosition);
             returnedMap.put(turningMotor, reversedHeading);
         }
         return returnedMap;
