@@ -48,6 +48,7 @@ public abstract class Swerve extends SubsystemBase implements Driveable {
             motor.setTargetPosition((int) (((currentPositionDegrees + calculatedWheelHeading) / degreePercentageToDegrees) * ticksPerRev));
             motor.set(0.7);
         }
+
         if(!Constants.SwerveConstants.drivingMotors.isEmpty()) {
             for(Map.Entry<Motor, Motor> entry : Constants.SwerveConstants.turningDrivingMotorsMap.entrySet()) {
                 Motor turningMotor = entry.getKey();
