@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.autos;
 
+import static org.firstinspires.ftc.teamcode.subsystem_math.SwerveMath.normalizeHeading;
 import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.TankConstants.leftMotor;
 import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.TankConstants.rightMotor;
 
@@ -104,12 +105,6 @@ public final class TankAuto extends CommandOpMode {
             rightMotor.stopMotor();
             leftMotor.stopMotor();
          }
-
-         /**Returns the shortest between the target angle and the current angle of the robot and limits this difference to be
-          * within -180 to 180 degrees.*/
-        public double normalizeHeading(double current, double target) {
-            return (target - current + 540) % 360 - 180;
-        }
 
         @Override
         public boolean isFinished() {
