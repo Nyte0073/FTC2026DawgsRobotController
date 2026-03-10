@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables.swerve;
 
+import android.util.Log;
+
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
 import org.firstinspires.ftc.teamcode.subsystem_math.SwerveMath;
@@ -43,7 +45,9 @@ public class SwerveModule {
         double normalizedHeading = SwerveMath.normalizeHeading(angle, absoluteHeading);
         double finalNormalizedHeading = SwerveMath.reverseHeading(angle, absoluteHeading, currentMotorPosition + normalizedHeading);
         rotatingMotor.setTargetDistance(finalNormalizedHeading);
-        rotatingMotor.set(0.1);
-        drivingMotor.set(Math.min(1, translatedAndRotatedVector.getMagnitude()));
+        Log.i(getClass().getSimpleName(), "Final Normalized Heading: " + finalNormalizedHeading);
+        Log.i(getClass().getSimpleName(), "Translated and Rotated Vector Magnitude: " + translatedAndRotatedVector.getMagnitude());
+//        rotatingMotor.set(0.1);
+//        drivingMotor.set(Math.min(1, translatedAndRotatedVector.getMagnitude()));
     }
 }
