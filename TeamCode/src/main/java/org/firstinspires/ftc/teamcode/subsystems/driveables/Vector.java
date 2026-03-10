@@ -103,4 +103,8 @@ public final class Vector {
     public double getMagnitude() {
         return Math.hypot(getX(), getY()) / Math.sqrt(2);
     }
+
+    public Vector deepCopy() {
+        return new Vector(getX(), getY(), getZ());
+    }
 }

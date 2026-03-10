@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.commands;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
-import org.firstinspires.ftc.teamcode.subsystems.driveables.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.driveables.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 
 /**Class for commanding a Mecanum Drive subsystem to drive around using four mecanum wheels.
@@ -31,7 +31,7 @@ public final class MecanumCommand extends CommandBase {
 
     @Override
     public void execute() {
-        driverVector.setX(-gamepadEx.getLeftX());
+        driverVector.setX(gamepadEx.getLeftX());
         driverVector.setY(-gamepadEx.getLeftY());
         driverVector.setZ(gamepadEx.getRightX());
         mecanumDrive.drive();

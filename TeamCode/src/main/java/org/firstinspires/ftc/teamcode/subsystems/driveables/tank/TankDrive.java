@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.driveables;
+package org.firstinspires.ftc.teamcode.subsystems.driveables.tank;
 
 import static org.firstinspires.ftc.teamcode.subsystem_math.TankMath.calculateMotorPower;
 import static org.firstinspires.ftc.teamcode.subsystem_math.TankMath.clamp;

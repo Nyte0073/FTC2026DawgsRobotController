@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.subsystems.driveables.TankDrive;
+import org.firstinspires.ftc.teamcode.subsystems.driveables.tank.TankDrive;
 
 /**CommandBase extension class for controlling a Tank drivetrain. Set this as a default command for an already created
  * {@code TankDrive} to make the tank drivetrain run and update the motors constantly and automatically.*/

@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.subsystems.driveables;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
+import org.firstinspires.ftc.teamcode.subsystems.driveables.swerve.SwerveModule;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 
 public final class Constants {
@@ -38,53 +38,34 @@ public final class Constants {
     /**Class that contains all the constant values and mutable objects used for a swerve drivetrain. */
     public static final class SwerveConstants {
 
-        /**List containing references to the swerve drivetrain's driving motors (the motor that only provide forward and backward motion
-         * relative to itself.*/
-        public static final List<Motor> drivingMotors = new ArrayList<>(),
-        /**List containing references to the swerve drivetrain's turning motors (The motors that provide forward and backward motion that gives the
-         driving motor's magnitude (motor power) a direction to then turn into a vector to add to the robot's final translation vector.*/
-                turningMotors = new ArrayList<>();
-
-                /**Maps each turning motor to their respective calculated rotated and translated vector.*/
-        public static final Map<Motor, Vector> motorsAndTheirRotatedAndTranslatedVectors = new HashMap<>();
-
-        /**Maps each turning motor to its respective driving motor within its specific module.*/
-        public static final Map<Motor, Motor> turningDrivingMotorsMap = new HashMap<>();
+        public static final double swerveDistancePerPulse = 0.25;
 
         /*String constants for the id's of all the motors being used with the swerve drivetrain.*/
         public static final String frontLeftDrivingMotorID = "frontLeftDriving", frontRightDrivingMotorID = "frontRightDriving",
                 backLeftDrivingMotorID = "backLeftDriving", backRightDrivingMotorID = "backRightDriving", frontLeftRotatingMotorID = "frontLeftRotating",
                 frontRightRotatingMotorID = "frontRightRotating", backLeftRotatingMotorID = "backLeftRotating", backRightRotatingMotorID = "backRightRotating";
 
-        /**Initializes the turning and driving motors so that they are ready to go as soon as the SwerveCommand implementation starts
-         *executing. This method stops and resets all the motors' encoders, sets the {@code RunMode} of the turning motors to PositionControl
-         * for encoder based rotation, and sets the {@code RunMode} for the driving motors to RawPower so that they can rotate freely while
-         * depending on motor power for angular speed. This method also fills the {@code turningDrivingMotorsMap} and {@code motorToVectorPositions}
-         * hashmaps with maps between the different motors and them and their different motor positions relative to the center of the robot. */
-        public static void initConstants(List<Motor> drivingMotors, List<Motor> turningMotors) {
-            if(!drivingMotors.isEmpty()) {
-                SwerveConstants.drivingMotors.addAll(drivingMotors);
-            }
-            SwerveConstants.turningMotors.addAll(turningMotors);
-            for(Motor motor : drivingMotors) {
-                motor.stopAndResetEncoder();
-                motor.setRunMode(Motor.RunMode.RawPower);
-            }
-            for(Motor motor : turningMotors) {
-                motor.stopAndResetEncoder();
-                motor.setRunMode(Motor.RunMode.PositionControl);
-            }
-            if(!drivingMotors.isEmpty()) {
-                turningDrivingMotorsMap.put(turningMotors.get(0), drivingMotors.get(0));
-                turningDrivingMotorsMap.put(turningMotors.get(1), drivingMotors.get(1));
-                turningDrivingMotorsMap.put(turningMotors.get(2), drivingMotors.get(2));
-                turningDrivingMotorsMap.put(turningMotors.get(3), drivingMotors.get(3));
-            }
+        public static SwerveModule frontLeftModule, frontRightModule, backLeftModule, backRightModule;
+        public static final List<SwerveModule> swerveModules = new ArrayList<>();
 
-            Vector.motorsToVectorPositions.put(turningMotors.get(0), new Vector(-1, 1));
-            Vector.motorsToVectorPositions.put(turningMotors.get(1), new Vector(1, 1));
-            Vector.motorsToVectorPositions.put(turningMotors.get(2), new Vector(-1, -1));
-            Vector.motorsToVectorPositions.put(turningMotors.get(3), new Vector(1, -1));
+        public static void initConstants(SwerveModule frontLeftModule, SwerveModule frontRightModule, SwerveModule backLeftModule, SwerveModule backRightModule) {
+            SwerveConstants.frontLeftModule = frontLeftModule;
+            SwerveConstants.frontRightModule = frontRightModule;
+            SwerveConstants.backLeftModule = backLeftModule;
+            SwerveConstants.backRightModule = backRightModule;
+            swerveModules.addAll(List.of(frontLeftModule, frontRightModule, backLeftModule, backRightModule));
+
+            for(SwerveModule module : swerveModules) {
+                Motor rotatingMotor = module.rotatingMotor;
+                Motor drivingMotor = module.drivingMotor;
+
+                rotatingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+                rotatingMotor.stopAndResetEncoder();
+                rotatingMotor.setRunMode(Motor.RunMode.PositionControl);
+
+                drivingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+                drivingMotor.setRunMode(Motor.RunMode.RawPower);
+            }
         }
     }
 
