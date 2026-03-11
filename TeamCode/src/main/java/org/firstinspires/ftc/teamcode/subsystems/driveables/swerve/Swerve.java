@@ -25,7 +25,7 @@ public abstract class Swerve extends SubsystemBase implements Driveable {
     public void drive() {
         Vector driverVector = driverVectorSupplier.get();
         int currentRobotOrientation = currentRobotOrientationSupplier.get();
-        boolean rotating = driverVector.getX() >= Constants.deadZoneTolerance;
+        boolean rotating = driverVector.getZ() >= Constants.deadZoneTolerance;
         calculateSwerveModuleHeadingsAndDrive(rotating, true, driverVector, currentRobotOrientation);
     }
 
@@ -41,6 +41,7 @@ public abstract class Swerve extends SubsystemBase implements Driveable {
         telemetry.addData("Driver Vector X: ", driverVector.getX());
         telemetry.addData("Driver Vector Y: ", driverVector.getY());
         telemetry.addData("Driver Vector Z: ", driverVector.getZ());
+        telemetry.update();
     }
 
     public abstract void stopThreads();

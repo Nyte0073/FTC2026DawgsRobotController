@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.subsystem_math.SwerveMath;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 
+/**Class representing a drive motor-turn motor pair and the calculations necessary in order to
+ * make module travel in the right direction to make the robot translate and/or rotate to where it wants.*/
 public class SwerveModule {
 
     public final Motor rotatingMotor, drivingMotor;
@@ -29,11 +31,11 @@ public class SwerveModule {
     public Vector calculateTranslatedAndRotatedMotorVector(boolean rotating, boolean clockwise, Vector driverVector, double rotationPower) {
         Vector positionVector = new Vector(0, 0, 0);
         if(rotating && clockwise) {
-            positionVector = Vector.rotate90DegreesClockwise.apply(this.positionVector.getX(), this.positionVector.getY());
+            positionVector = Vector.rotate90DegreesClockwise.apply(this.positionVector.getX(), this.positionVector.getY()).times(rotationPower);
         } else if(rotating) {
-            positionVector = Vector.rotate90DegreesCounterclockwise.apply(this.positionVector.getX(), this.positionVector.getY());
+            positionVector = Vector.rotate90DegreesCounterclockwise.apply(this.positionVector.getX(), this.positionVector.getY()).times(rotationPower);
         }
-        return driverVector.plus(positionVector.times(rotationPower));
+        return driverVector.plus(positionVector.times(0));
     }
 
     public void applyTransAndRotVectorToMotor(Vector translatedAndRotatedVector, int currentRobotOrientation) {
@@ -43,7 +45,7 @@ public class SwerveModule {
         int currentMotorPosition = getCurrentModuleHeading();
         int absoluteHeading = currentMotorPosition + currentRobotOrientation;
         double normalizedHeading = SwerveMath.normalizeHeading(angle, absoluteHeading);
-        double finalNormalizedHeading = SwerveMath.reverseHeading(angle, absoluteHeading, currentMotorPosition + normalizedHeading);
+        double finalNormalizedHeading = SwerveMath.reverseHeading(normalizedHeading, absoluteHeading, currentMotorPosition + normalizedHeading);
         rotatingMotor.setTargetDistance(finalNormalizedHeading);
         Log.i(getClass().getSimpleName(), "Final Normalized Heading: " + finalNormalizedHeading);
         Log.i(getClass().getSimpleName(), "Translated and Rotated Vector Magnitude: " + translatedAndRotatedVector.getMagnitude());

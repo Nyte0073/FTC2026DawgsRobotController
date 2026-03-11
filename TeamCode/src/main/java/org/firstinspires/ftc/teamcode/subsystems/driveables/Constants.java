@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables;
 
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
 import org.firstinspires.ftc.teamcode.subsystems.driveables.swerve.SwerveModule;
@@ -20,6 +21,17 @@ public final class Constants {
      * current position vector.*/
 
     public static final double deadZoneTolerance = 0.12, degreePercentageToDegrees = 360;
+
+    public static final List<GamepadKeys.Button> buttons = List.of(
+            GamepadKeys.Button.DPAD_DOWN,
+            GamepadKeys.Button.DPAD_LEFT,
+            GamepadKeys.Button.DPAD_RIGHT,
+            GamepadKeys.Button.DPAD_UP,
+            GamepadKeys.Button.A,
+            GamepadKeys.Button.B,
+            GamepadKeys.Button.X,
+            GamepadKeys.Button.Y
+    );
     public static final BiFunction<Vector, Vector, Vector> robotCoordinatesAndTargetToCoordinates = (robotCoordinates, targetCoordinates) -> {
         Vector v = new Vector();
         double robotX = robotCoordinates.getX();
@@ -63,8 +75,8 @@ public final class Constants {
                 rotatingMotor.stopAndResetEncoder();
                 rotatingMotor.setRunMode(Motor.RunMode.PositionControl);
 
-                drivingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-                drivingMotor.setRunMode(Motor.RunMode.RawPower);
+//                drivingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+//                drivingMotor.setRunMode(Motor.RunMode.RawPower);
             }
         }
     }
