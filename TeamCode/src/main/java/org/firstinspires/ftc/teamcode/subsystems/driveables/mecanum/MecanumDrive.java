@@ -16,8 +16,6 @@ public final class MecanumDrive extends Mecanum {
 
     private final IMU imu;
 
-    /**Constructs a new {@code MecanumDrive()} with initialized {@code driverVector} Supplier, {@code currentRobotOrientation} Supplier,
-     * and */
     public MecanumDrive(Supplier<Vector> driverVectorSupplier, Supplier<Double> currentRobotOrientationSupplier, Motor[] motors, Telemetry telemetry, IMU imu) {
         super(driverVectorSupplier, currentRobotOrientationSupplier, telemetry);
         mecanumDrive = new com.arcrobotics.ftclib.drivebase.MecanumDrive(motors[0], motors[1], motors[2], motors[3]);

@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.swerve.SwerveDrive;
 
+/**Class to command a swerve drive subsystem to drive around */
 public class SwerveCommand extends CommandBase {
 
     private final SwerveDrive swerveDrive;
@@ -21,7 +22,7 @@ public class SwerveCommand extends CommandBase {
     @Override
     public void execute() {
         driverVector.setX(gamepadEx.getLeftX());
-        driverVector.setY(-gamepadEx.getLeftY());
+        driverVector.setY(gamepadEx.getLeftY());
         driverVector.setZ(gamepadEx.getRightX());
         swerveDrive.drive();
     }

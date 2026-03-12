@@ -68,5 +68,8 @@ public abstract class Mecanum extends SubsystemBase implements Driveable {
      * drive around.*/
     public abstract void calculateMotorPowers(double originalRobotAngle, Vector driverVector);
 
+    /**Depending on which button was pressed, the mecanum performs a specific action that is other than focusing on driving.
+     * This can range from activating other hardware (claws, elevators, etc.) on the robot to resetting the robot's gyroscope system when oriented
+     * a certain way.*/
     public abstract void switchActions(GamepadKeys.Button button);
 }

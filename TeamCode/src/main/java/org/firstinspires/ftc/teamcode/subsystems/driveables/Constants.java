@@ -141,6 +141,10 @@ public final class Constants {
             MecanumConstants.backLeftMotor.setInverted(true);
             MecanumConstants.backRightMotor.setInverted(true);
             MecanumConstants.frontRightMotor.setInverted(true);
+            MecanumConstants.frontLeftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            MecanumConstants.frontRightMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            MecanumConstants.backLeftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            MecanumConstants.backRightMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         }
     }
 }

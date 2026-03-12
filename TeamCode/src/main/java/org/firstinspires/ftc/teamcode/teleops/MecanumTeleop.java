@@ -32,7 +32,7 @@ public final class MecanumTeleop extends CommandOpMode {
         imu.initialize(parameters);
         imu.resetYaw();
         Vector driverVector = new Vector();
-        MecanumDrive mecanumDrive = new MecanumDrive(() -> driverVector, () -> imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), motors, telemetry);
+        MecanumDrive mecanumDrive = new MecanumDrive(() -> driverVector, () -> imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), motors, telemetry, imu);
         MecanumCommand command = new MecanumCommand(driverVector, gamepadEx, mecanumDrive);
         command.addRequirements(mecanumDrive);
         mecanumDrive.setDefaultCommand(command);
