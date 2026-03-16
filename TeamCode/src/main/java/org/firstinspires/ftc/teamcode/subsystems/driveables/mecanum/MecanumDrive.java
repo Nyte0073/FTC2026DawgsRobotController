@@ -33,10 +33,10 @@ public final class MecanumDrive extends Mecanum {
     }
     @Override
     public void calculateMotorPowers(double originalRobotAngle, Vector driverVector) {
-        double x = -driverVector.getX();
+        double x = driverVector.getX();
         double y = driverVector.getY();
-        double z = -driverVector.getZ();
-        mecanumDrive.driveFieldCentric(x, y, z, originalRobotAngle);
+        double z = driverVector.getZ();
+        mecanumDrive.driveFieldCentric(x, y, z, originalRobotAngle, true);
     }
 
     @Override

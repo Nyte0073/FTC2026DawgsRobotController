@@ -1,15 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.os.Bundle;
+class Main {
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-public class MainActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        /*Oh yeah this font is amazing for programming.*/
+    public static void main(String[] args) {
+        System.out.println("This is code being run inside of a main method that is inside of a class.");
     }
 }
+

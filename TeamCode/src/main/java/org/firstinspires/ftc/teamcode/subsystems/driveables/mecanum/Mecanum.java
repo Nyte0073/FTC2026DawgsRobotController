@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Driveable;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 
@@ -42,6 +43,10 @@ public abstract class Mecanum extends SubsystemBase implements Driveable {
         telemetry.addData("X: ", driverVector.getX());
         telemetry.addData("Y: ", driverVector.getY());
         Log.i(getName(), "Periodic running.");
+        telemetry.addData("Front Left Distance: ", Constants.MecanumConstants.frontLeftMotor.encoder.getDistance());
+        telemetry.addData("Front Right Distance: ", Constants.MecanumConstants.frontRightMotor.encoder.getDistance());
+        telemetry.addData("Back Left Distance: ", Constants.MecanumConstants.backLeftMotor.encoder.getDistance());
+        telemetry.addData("Back Right Distance: ", Constants.MecanumConstants.backRightMotor.encoder.getDistance());
         telemetry.update();
 }
 

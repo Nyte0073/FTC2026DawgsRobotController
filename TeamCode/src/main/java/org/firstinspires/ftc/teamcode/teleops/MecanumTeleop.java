@@ -37,5 +37,4 @@ public final class MecanumTeleop extends CommandOpMode {
         command.addRequirements(mecanumDrive);
         mecanumDrive.setDefaultCommand(command);
     }
-
 }

@@ -17,9 +17,6 @@ public final class Constants {
     /**The length of the field, in inches.*/
     public static final int fieldLength = 144;
 
-    /**Function for calculating the distance in ticks required to make the robot go the target vector, based on the input from the robot's
-     * current position vector.*/
-
     public static final double deadZoneTolerance = 0.12, degreePercentageToDegrees = 360;
 
     public static final List<GamepadKeys.Button> buttons = List.of(
@@ -45,7 +42,7 @@ public final class Constants {
     };
 
     /**The angle tolerance allowed for the robot so that the robot can be off by a few degrees and still be considered at angle.*/
-    public static final double tolerance = 5;
+    public static final double tolerance = 6;
 
     /**Class that contains all the constant values and mutable objects used for a swerve drivetrain. */
     public static final class SwerveConstants {
@@ -59,6 +56,7 @@ public final class Constants {
 
         public static SwerveModule frontLeftModule, frontRightModule, backLeftModule, backRightModule;
         public static final List<SwerveModule> swerveModules = new ArrayList<>();
+        public static final double swerveTolerance = 0.08;
 
         public static void initConstants(SwerveModule frontLeftModule, SwerveModule frontRightModule, SwerveModule backLeftModule, SwerveModule backRightModule) {
             SwerveConstants.frontLeftModule = frontLeftModule;
@@ -74,6 +72,7 @@ public final class Constants {
                 rotatingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
                 rotatingMotor.stopAndResetEncoder();
                 rotatingMotor.setRunMode(Motor.RunMode.PositionControl);
+                rotatingMotor.setPositionTolerance(4);
 
 //                drivingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 //                drivingMotor.setRunMode(Motor.RunMode.RawPower);
@@ -137,14 +136,22 @@ public final class Constants {
             MecanumConstants.frontRightMotor = frontRightMotor;
             MecanumConstants.backLeftMotor = backLeftMotor;
             MecanumConstants.backRightMotor = backRightMotor;
+
             MecanumConstants.frontLeftMotor.setInverted(true);
             MecanumConstants.backLeftMotor.setInverted(true);
             MecanumConstants.backRightMotor.setInverted(true);
             MecanumConstants.frontRightMotor.setInverted(true);
+
             MecanumConstants.frontLeftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             MecanumConstants.frontRightMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             MecanumConstants.backLeftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             MecanumConstants.backRightMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+            MecanumConstants.frontLeftMotor.stopAndResetEncoder();
+            MecanumConstants.frontRightMotor.stopAndResetEncoder();
+            MecanumConstants.backLeftMotor.stopAndResetEncoder();
+            MecanumConstants.backRightMotor.stopAndResetEncoder();
+
         }
     }
 }

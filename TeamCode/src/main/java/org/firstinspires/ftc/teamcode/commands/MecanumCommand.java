@@ -38,9 +38,9 @@ public final class MecanumCommand extends CommandBase {
     @Override
     public void execute() {
         gamepadEx.readButtons();
-        driverVector.setX(gamepadEx.getLeftX());
+        driverVector.setX(-gamepadEx.getLeftX());
         driverVector.setY(-gamepadEx.getLeftY());
-        driverVector.setZ(gamepadEx.getRightX());
+        driverVector.setZ(-gamepadEx.getRightX());
         mecanumDrive.drive();
         for (GamepadKeys.Button b : Constants.buttons) {
             if (buttonPredicate.test(b)) {

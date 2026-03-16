@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables.swerve;
 
+import android.util.Log;
+
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
 import org.firstinspires.ftc.teamcode.subsystem_math.SwerveMath;
@@ -18,14 +20,35 @@ public class SwerveModule {
     /**Reference to the modules position relative to the center of the robot.*/
     public final Vector positionVector;
 
+    /**The final normalized heading for the module to turn once all the calculations are done to calculate the target angle, which will
+     * will be stored as the value of this variable.*/
+    private volatile int finalNormalizedHeading = 0;
+
+    private int previousNormalizedHeading = 0;
+
+    private final Thread rotatingMotorThread;
+
     /**Constructs a new {@code SwerveModule()} with an initialized {@code rotatingMotor} Motor, {@code drivingMotor}
      * Motor and {@code positionVector} Vector. Sets the distancePerPulse of the rotating motor so that the distance per rotation ticks of the motor
      * is the same as 360 degrees.*/
+    @SuppressWarnings("all")
     public SwerveModule(Motor rotatingMotor, Motor drivingMotor, Vector positionVector) {
         this.rotatingMotor = rotatingMotor;
         this.drivingMotor = drivingMotor;
         this.rotatingMotor.setDistancePerPulse(Constants.SwerveConstants.swerveDistancePerPulse);
         this.positionVector = positionVector.deepCopy();
+        rotatingMotorThread = new Thread(
+                () -> {
+                    while(!Thread.currentThread().isInterrupted()) {
+                            rotatingMotor.set(0.1);
+                        try {
+                            Thread.sleep(10);
+                        } catch(Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+        );
     }
 
     /**@return The current normalized orientation of the module, within the range of 0 to 360 degrees.*/
@@ -51,18 +74,28 @@ public class SwerveModule {
     }
 
     public void applyTransAndRotVectorToMotor(Vector translatedAndRotatedVector, int currentRobotOrientation) {
-        int angle = translatedAndRotatedVector.getMagnitude() == 0 ? 0 : (int) (Math.toDegrees(Math.atan2(
+        int angle = translatedAndRotatedVector.getMagnitude() <= Constants.SwerveConstants.swerveTolerance ? 0 : (int) (Math.toDegrees(Math.atan2(
                 translatedAndRotatedVector.getY(), translatedAndRotatedVector.getX()
         ))) - 90;
         int currentMotorPosition = getCurrentModuleHeading();
         int absoluteHeading = currentMotorPosition + currentRobotOrientation;
         double normalizedHeading = SwerveMath.normalizeHeading(angle, absoluteHeading);
-        double finalNormalizedHeading = SwerveMath.reverseHeading(normalizedHeading, absoluteHeading, currentMotorPosition + normalizedHeading);
-        rotatingMotor.setTargetDistance(finalNormalizedHeading);
-        while(!rotatingMotor.atTargetPosition()) {
-            rotatingMotor.set(0.1);
+        finalNormalizedHeading = (int) SwerveMath.reverseHeading(normalizedHeading, absoluteHeading, currentMotorPosition + normalizedHeading);
+        if(Math.abs(finalNormalizedHeading - previousNormalizedHeading) > Constants.tolerance) {
+            rotatingMotor.setTargetDistance(finalNormalizedHeading);
+            previousNormalizedHeading = finalNormalizedHeading;
         }
-        rotatingMotor.set(0);
+        Log.i(getClass().getSimpleName(), "Normalized heading: " + finalNormalizedHeading);
 //        drivingMotor.set(Math.min(1, translatedAndRotatedVector.getMagnitude()));
     }
+
+    public void startRotatingThread() {
+        rotatingMotorThread.start();
+    }
+
+    public void stopRotatingThread() {
+        rotatingMotorThread.interrupt();
+    }
 }
+
+
