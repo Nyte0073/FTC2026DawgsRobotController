@@ -1,37 +1,49 @@
 package org.firstinspires.ftc.teamcode.subsystems.io;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.function.Supplier;
 
-public class AndroidStudioServer {
+public class AndroidStudioServer extends Thread {
 
-    public static ServerSocket serverSocket;
-    public static Socket acceptedSocket;
-    public static final ObjectOutputStream outputStream;
-    public static final ObjectInputStream inputStream;
+    private static final BufferedWriter outputStream;
+    private static final Gson gson = new Gson();
 
     static {
         try {
-            serverSocket = new ServerSocket(8000);
-            acceptedSocket = serverSocket.accept();
-            outputStream = new ObjectOutputStream(acceptedSocket.getOutputStream());
+            ServerSocket serverSocket = new ServerSocket(1000);
+            Socket acceptedSocket = serverSocket.accept();
+            outputStream = new BufferedWriter(new OutputStreamWriter(acceptedSocket.getOutputStream(), StandardCharsets.UTF_8));
             outputStream.flush();
-            inputStream = new ObjectInputStream(acceptedSocket.getInputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static boolean socketConnected() {
-        return acceptedSocket != null;
-    }
-
-    public static void sendData(RobotSpecs<? extends Serializable> robotSpecs) throws Exception {
-        outputStream.writeObject(robotSpecs);
-        outputStream.flush();
+    @SuppressWarnings("all")
+    public AndroidStudioServer(Supplier<RobotSpecs> robotSpecsSupplier) {
+        super(
+                () -> {
+                    while(!Thread.currentThread().isInterrupted()) {
+                        try {
+                            RobotSpecs specs = robotSpecsSupplier.get();
+                            String g = gson.toJson(specs);
+                            outputStream.write(g);
+                            outputStream.newLine();
+                            outputStream.flush();
+                           Thread.sleep(50);
+                        } catch(Exception e) {
+                            throw new Error(e);
+                        }
+                    }
+                }
+        );
+        setName("Well no duh.");
     }
 }

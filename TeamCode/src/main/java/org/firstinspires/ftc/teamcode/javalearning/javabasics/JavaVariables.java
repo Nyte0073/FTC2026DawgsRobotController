@@ -43,3 +43,4 @@ class VariableCreationExample {
         * is how all variables and objects in Java are declared or created, so once you learn it, it is applicable everywhere.*/
     }
 }
+

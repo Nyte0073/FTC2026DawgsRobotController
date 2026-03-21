@@ -26,8 +26,6 @@ public class SwerveModule {
 
     private int previousNormalizedHeading = 0;
 
-    private final Thread rotatingMotorThread;
-
     /**Constructs a new {@code SwerveModule()} with an initialized {@code rotatingMotor} Motor, {@code drivingMotor}
      * Motor and {@code positionVector} Vector. Sets the distancePerPulse of the rotating motor so that the distance per rotation ticks of the motor
      * is the same as 360 degrees.*/
@@ -37,24 +35,12 @@ public class SwerveModule {
         this.drivingMotor = drivingMotor;
         this.rotatingMotor.setDistancePerPulse(Constants.SwerveConstants.swerveDistancePerPulse);
         this.positionVector = positionVector.deepCopy();
-        rotatingMotorThread = new Thread(
-                () -> {
-                    while(!Thread.currentThread().isInterrupted()) {
-                            rotatingMotor.set(0.1);
-                        try {
-                            Thread.sleep(10);
-                        } catch(Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-        );
     }
 
     /**@return The current normalized orientation of the module, within the range of 0 to 360 degrees.*/
     public int getCurrentModuleHeading() {
         double position = rotatingMotor.getDistance();
-        int angle = (int) (position * 360 / rotatingMotor.getCPR());
+        int angle = (int) position;
         return (angle % 360 + 360) % 360;
     }
 
@@ -86,15 +72,8 @@ public class SwerveModule {
             previousNormalizedHeading = finalNormalizedHeading;
         }
         Log.i(getClass().getSimpleName(), "Normalized heading: " + finalNormalizedHeading);
+        rotatingMotor.set(0.1);
 //        drivingMotor.set(Math.min(1, translatedAndRotatedVector.getMagnitude()));
-    }
-
-    public void startRotatingThread() {
-        rotatingMotorThread.start();
-    }
-
-    public void stopRotatingThread() {
-        rotatingMotorThread.interrupt();
     }
 }
 
