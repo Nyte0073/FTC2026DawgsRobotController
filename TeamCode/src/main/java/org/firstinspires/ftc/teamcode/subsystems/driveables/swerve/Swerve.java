@@ -61,4 +61,6 @@ public abstract class Swerve extends SubsystemBase implements Driveable {
     /**Calculates and applies the contribution vector to their corresponding swerve module to add up to a general vector that is the robot's
      * original drive vector inputted from human driver's gamepad.*/
     public abstract void calculateSwerveModuleHeadingsAndDrive(boolean rotating, boolean clockwise, Vector driverVector, int currentRobotOrientation);
+
+    public abstract Thread[] getRobotThreads();
 }

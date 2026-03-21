@@ -49,12 +49,15 @@ public class SwerveModule {
      *
      * @return The rotated and translated vector that represents this modules translation and rotation contribution to the robot's overall
      * driving and rotating vector.*/
+    @SuppressWarnings("all")
     public Vector calculateTranslatedAndRotatedMotorVector(boolean rotating, boolean clockwise, Vector driverVector, double rotationPower) {
-        Vector positionVector = new Vector(0, 0, 0);
+        Vector positionVector = Vector.motorsToVectorPositions.get(this);
         if(rotating && clockwise) {
             positionVector = Vector.rotate90DegreesClockwise.apply(this.positionVector.getX(), this.positionVector.getY()).times(rotationPower);
         } else if(rotating) {
             positionVector = Vector.rotate90DegreesCounterclockwise.apply(this.positionVector.getX(), this.positionVector.getY()).times(rotationPower);
+        } else {
+            positionVector = new Vector(0, 0, 0);
         }
         return driverVector.plus(positionVector.times(0));
     }

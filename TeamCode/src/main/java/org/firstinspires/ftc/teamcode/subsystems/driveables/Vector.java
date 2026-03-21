@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables;
 
-import com.arcrobotics.ftclib.hardware.motors.Motor;
+import org.firstinspires.ftc.teamcode.subsystems.driveables.swerve.SwerveModule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
 public final class Vector {
 
     /**Map of the turning modules to their respective positions relative to the center of the robot.*/
-    public static final Map<Motor, Vector> motorsToVectorPositions = new HashMap<>();
+    public static final Map<SwerveModule, Vector> motorsToVectorPositions = new HashMap<>();
 
     /**Rotates an inputted vector 90 degrees clockwise by inputting y for x and x for y, and by changing the x value of the original
      * vector to be negative.*/
