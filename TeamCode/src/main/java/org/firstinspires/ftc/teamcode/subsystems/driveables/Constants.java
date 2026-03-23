@@ -77,11 +77,6 @@ public final class Constants {
 //                drivingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 //                drivingMotor.setRunMode(Motor.RunMode.RawPower);
             }
-
-            Vector.motorsToVectorPositions.put(swerveModules.get(0), new Vector(-1, 1));
-            Vector.motorsToVectorPositions.put(swerveModules.get(1), new Vector(1, 1));
-            Vector.motorsToVectorPositions.put(swerveModules.get(2), new Vector(-1, -1));
-            Vector.motorsToVectorPositions.put(swerveModules.get(3), new Vector(1, -1));
         }
     }
 

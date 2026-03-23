@@ -51,13 +51,11 @@ public class SwerveModule {
      * driving and rotating vector.*/
     @SuppressWarnings("all")
     public Vector calculateTranslatedAndRotatedMotorVector(boolean rotating, boolean clockwise, Vector driverVector, double rotationPower) {
-        Vector positionVector = Vector.motorsToVectorPositions.get(this);
+        Vector positionVector = new Vector(0, 0, 0);
         if(rotating && clockwise) {
             positionVector = Vector.rotate90DegreesClockwise.apply(this.positionVector.getX(), this.positionVector.getY()).times(rotationPower);
         } else if(rotating) {
             positionVector = Vector.rotate90DegreesCounterclockwise.apply(this.positionVector.getX(), this.positionVector.getY()).times(rotationPower);
-        } else {
-            positionVector = new Vector(0, 0, 0);
         }
         return driverVector.plus(positionVector.times(0));
     }
