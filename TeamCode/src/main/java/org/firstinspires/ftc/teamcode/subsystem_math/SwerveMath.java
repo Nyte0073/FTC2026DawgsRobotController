@@ -38,7 +38,7 @@ public final class SwerveMath {
      * because the turning motor has the right orientation just in the opposite direction. But if the total rotation is less than 180, then
      * no reversing needs to happen this method will just return the target heading as normal.*/
     public static double reverseHeading(double target, double current, double totalPos) {
-        return Math.abs(totalPos) > 180 ?  normalizeHeading(totalPos < 0 ? totalPos + 180 : totalPos - 180, current) :
+        return Math.abs(totalPos) > 90 ?  normalizeHeading(totalPos < 0 ? totalPos + 180 : totalPos - 180, current) :
                 target;
     }
 }

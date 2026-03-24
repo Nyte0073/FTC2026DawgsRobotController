@@ -56,7 +56,8 @@ public final class Constants {
 
         public static SwerveModule frontLeftModule, frontRightModule, backLeftModule, backRightModule;
         public static final List<SwerveModule> swerveModules = new ArrayList<>();
-        public static final double swerveTolerance = 0.08;
+        public static final double swerveTolerance = 0.08,
+        swerveKp = 0.01, swerveKi = 0, swerveKd = 0.0005;
 
         public static void initConstants(SwerveModule frontLeftModule, SwerveModule frontRightModule, SwerveModule backLeftModule, SwerveModule backRightModule) {
             SwerveConstants.frontLeftModule = frontLeftModule;
@@ -71,7 +72,7 @@ public final class Constants {
 
                 rotatingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
                 rotatingMotor.stopAndResetEncoder();
-                rotatingMotor.setRunMode(Motor.RunMode.PositionControl);
+                rotatingMotor.setRunMode(Motor.RunMode.RawPower);
                 rotatingMotor.setPositionTolerance(4);
 
 //                drivingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);

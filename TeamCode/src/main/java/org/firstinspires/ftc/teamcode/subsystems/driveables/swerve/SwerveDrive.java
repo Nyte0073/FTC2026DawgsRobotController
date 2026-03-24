@@ -29,6 +29,7 @@ public class SwerveDrive extends Swerve {
     @Override
     public void calculateSwerveModuleHeadingsAndDrive(boolean rotating, boolean clockwise, Vector driverVector, int currentRobotOrientation) {
         for(SwerveModule swerveModule : Constants.SwerveConstants.swerveModules) {
+//            SwerveModule swerveModule = Constants.SwerveConstants.swerveModules.get(0);
             Vector translatedAndRotatedVector = swerveModule.calculateTranslatedAndRotatedMotorVector(rotating,
                     clockwise, driverVector, driverVector.getZ());
             swerveModule.applyTransAndRotVectorToMotor(translatedAndRotatedVector, currentRobotOrientation);
