@@ -43,10 +43,10 @@ public abstract class Mecanum extends SubsystemBase implements Driveable {
         telemetry.addData("X: ", driverVector.getX());
         telemetry.addData("Y: ", driverVector.getY());
         Log.i(getName(), "Periodic running.");
-        telemetry.addData("Front Left Distance: ", Constants.MecanumConstants.frontLeftMotor.encoder.getDistance());
-        telemetry.addData("Front Right Distance: ", Constants.MecanumConstants.frontRightMotor.encoder.getDistance());
-        telemetry.addData("Back Left Distance: ", Constants.MecanumConstants.backLeftMotor.encoder.getDistance());
-        telemetry.addData("Back Right Distance: ", Constants.MecanumConstants.backRightMotor.encoder.getDistance());
+        telemetry.addData("Front Left Distance: ", Constants.MecanumConstants.turningMotors.get(0).encoder.getDistance());
+        telemetry.addData("Front Right Distance: ", Constants.MecanumConstants.turningMotors.get(1).encoder.getDistance());
+        telemetry.addData("Back Left Distance: ", Constants.MecanumConstants.turningMotors.get(2).encoder.getDistance());
+        telemetry.addData("Back Right Distance: ", Constants.MecanumConstants.turningMotors.get(3).encoder.getDistance());
         telemetry.update();
 }
 

@@ -20,8 +20,6 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
  * make module travel in the right direction to make the robot translate and/or rotate to where it wants.*/
 public class SwerveModule {
 
-    private final PIDController controller = new PIDController(swerveKp, swerveKi, swerveKd);
-
     /**Reference to the module's rotating motor.*/
     public final Motor rotatingMotor,
     /**Reference to the module's driving motor.*/
@@ -47,10 +45,9 @@ public class SwerveModule {
         this.drivingMotor = drivingMotor;
         this.rotatingMotor.setDistancePerPulse(Constants.SwerveConstants.swerveDistancePerPulse);
         this.positionVector = positionVector.deepCopy();
-        controller.reset();
         this.rotatingMotor.setInverted(true);
         this.rotatingMotor.encoder.setDirection(Motor.Direction.REVERSE);
-        pidModule = new AngularPIDModule(telemetry, this.rotatingMotor);
+        pidModule = new AngularPIDModule(telemetry, this.rotatingMotor, swerveKp, swerveKi, swerveKd);
     }
 
     /**@return The current normalized orientation of the module, within the range of 0 to 360 degrees.*/

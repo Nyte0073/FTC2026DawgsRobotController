@@ -130,7 +130,7 @@ public final class Constants {
 
         public static final double mecanumKp = 0.01, mecanumKs = 0, mecanumKd = 0.005;
 
-        public static final double distancePerPulseInches = 0.00873143, distancePerPulseAngle = 0.25;
+        public static final double distancePerPulseInches = 0.02619428, distancePerPulseAngle = 0.25;
         public static final List<Motor> turningMotors = new ArrayList<>();
 
         /**Initializes the mecanum motors by setting them all inverted and filling their mutable references.*/
@@ -138,8 +138,9 @@ public final class Constants {
             turningMotors.addAll(List.of(frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor));
             for(Motor m : turningMotors) {
                 m.setInverted(true);
-                m.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+               // m.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
                 m.stopAndResetEncoder();
+                m.setRunMode(Motor.RunMode.RawPower);
                 if(auto) {
                     m.setDistancePerPulse(distancePerPulseInches);
                 }

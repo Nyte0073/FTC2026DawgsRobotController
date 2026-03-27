@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.pid;
 
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.MecanumConstants.mecanumKd;
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.MecanumConstants.mecanumKp;
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.MecanumConstants.mecanumKs;
+import android.util.Log;
 
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -10,17 +8,22 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 
+/**Class to be used when wanting to use a PID system to make a motor travel a certain distance in inches.
+ *To convert from inches to ticks, you divide the inches by inches per tick (DPP) to get the ticks, and for inches,
+ * since the DPP is 4π / 1440 ≈ 0.00873, then that means you can set the amount inches you want to travel in the {@code setTarget()}
+ * method to get the */
 public class LinearPIDModule implements PIDModule {
 
     private final Motor motor;
     private final Telemetry telemetry;
-    private final PIDController pidController = new PIDController(mecanumKp, mecanumKs, mecanumKd);
+    private final PIDController pidController;
     private double target;
 
-    public LinearPIDModule(Motor turningMotor, Telemetry telemetry) {
+    public LinearPIDModule(Motor turningMotor, Telemetry telemetry, double kP, double kS, double kD) {
         this.motor = turningMotor;
         this.motor.setDistancePerPulse(Constants.MecanumConstants.distancePerPulseInches);
         this.telemetry = telemetry;
+        pidController = new PIDController(kP, kS, kD);
         pidController.reset();
     }
 
@@ -39,6 +42,7 @@ public class LinearPIDModule implements PIDModule {
 
     @Override
     public double calculate() {
+        Log.i(getClass().getSimpleName(), "PID Error: " + pidController.getPositionError());
         return pidController.calculate(getDistance());
     }
 
