@@ -31,13 +31,13 @@ public class SwerveTeleop extends CommandOpMode {
         imu.initialize(parameters);
         SwerveModule[] swerveModules = new SwerveModule[] {
             new SwerveModule(new Motor(hardwareMap, Constants.SwerveConstants.frontLeftRotatingMotorID),
-                    null, new Vector(-1, 1)),
+                    null, new Vector(-1, 1), telemetry),
                 new SwerveModule(new Motor(hardwareMap, Constants.SwerveConstants.frontRightRotatingMotorID),
-                        null, new Vector(1, 1)),
+                        null, new Vector(1, 1), telemetry),
             new SwerveModule(new Motor(hardwareMap, Constants.SwerveConstants.backLeftRotatingMotorID),
-                    null, new Vector(-1, -1)),
+                    null, new Vector(-1, -1), telemetry),
                 new SwerveModule(new Motor(hardwareMap, Constants.SwerveConstants.backRightRotatingMotorID),
-                        null, new Vector(1, -1))
+                        null, new Vector(1, -1), telemetry)
         };
         Constants.SwerveConstants.initConstants(swerveModules[0], swerveModules[1], swerveModules[2], swerveModules[3]);
         Vector driverVector = new Vector(0, 0, 0);

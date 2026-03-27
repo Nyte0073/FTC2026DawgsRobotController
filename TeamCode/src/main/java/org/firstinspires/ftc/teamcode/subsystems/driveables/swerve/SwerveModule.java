@@ -9,6 +9,9 @@ import android.util.Log;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.pid.AngularPIDModule;
+import org.firstinspires.ftc.teamcode.pid.PIDModule;
 import org.firstinspires.ftc.teamcode.subsystem_math.SwerveMath;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
@@ -33,11 +36,13 @@ public class SwerveModule {
 
     private int previousNormalizedHeading = 0;
 
+    private final PIDModule pidModule;
+
     /**Constructs a new {@code SwerveModule()} with an initialized {@code rotatingMotor} Motor, {@code drivingMotor}
      * Motor and {@code positionVector} Vector. Sets the distancePerPulse of the rotating motor so that the distance per rotation ticks of the motor
      * is the same as 360 degrees.*/
     @SuppressWarnings("all")
-    public SwerveModule(Motor rotatingMotor, Motor drivingMotor, Vector positionVector) {
+    public SwerveModule(Motor rotatingMotor, Motor drivingMotor, Vector positionVector, Telemetry telemetry) {
         this.rotatingMotor = rotatingMotor;
         this.drivingMotor = drivingMotor;
         this.rotatingMotor.setDistancePerPulse(Constants.SwerveConstants.swerveDistancePerPulse);
@@ -45,6 +50,7 @@ public class SwerveModule {
         controller.reset();
         this.rotatingMotor.setInverted(true);
         this.rotatingMotor.encoder.setDirection(Motor.Direction.REVERSE);
+        pidModule = new AngularPIDModule(telemetry, this.rotatingMotor);
     }
 
     /**@return The current normalized orientation of the module, within the range of 0 to 360 degrees.*/
@@ -78,12 +84,13 @@ public class SwerveModule {
         finalNormalizedHeading = (int) SwerveMath.reverseHeading(normalizedHeading, absoluteHeading, currentMotorPosition + normalizedHeading);
         if(Math.abs(finalNormalizedHeading - previousNormalizedHeading) > Constants.tolerance) {
             previousNormalizedHeading = finalNormalizedHeading;
-            controller.setSetPoint(finalNormalizedHeading);
+            pidModule.setTarget(finalNormalizedHeading);
+            // controller.setSetPoint(finalNormalizedHeading);
+            /*Keep the above for now, just in case we need to set it back.*/
         }
-        double distance = rotatingMotor.getDistance();
-        double calculate = controller.calculate(distance);
+        double calculate = pidModule.calculate();
         rotatingMotor.set(calculate);
-        Log.i(getClass().getSimpleName(), "Distance: " + distance);
+        Log.i(getClass().getSimpleName(), "Distance: " + pidModule.getDistance());
         Log.i(getClass().getSimpleName(), "Calculate: " + calculate);
     }
 }

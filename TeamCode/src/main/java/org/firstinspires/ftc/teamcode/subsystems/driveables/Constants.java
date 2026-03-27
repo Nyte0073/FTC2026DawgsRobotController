@@ -128,31 +128,22 @@ public final class Constants {
         public static final String frontLeftMecanumMotor = "frontLeftMecanumMotor", frontRightMecanumMotor = "frontRightMecanumMotor",
                 backLeftMecanumMotor = "backLeftMecanumMotor", backRightMecanumMotor = "backRightMecanumMotor";
 
-        /*References to all four mecanum motors being used to control the drivetrain.*/
-        public static Motor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+        public static final double mecanumKp = 0.01, mecanumKs = 0, mecanumKd = 0.005;
+
+        public static final double distancePerPulseInches = 0.00873143, distancePerPulseAngle = 0.25;
+        public static final List<Motor> turningMotors = new ArrayList<>();
 
         /**Initializes the mecanum motors by setting them all inverted and filling their mutable references.*/
-        public static void initConstants(Motor frontLeftMotor, Motor frontRightMotor, Motor backLeftMotor, Motor backRightMotor) {
-            MecanumConstants.frontLeftMotor = frontLeftMotor;
-            MecanumConstants.frontRightMotor = frontRightMotor;
-            MecanumConstants.backLeftMotor = backLeftMotor;
-            MecanumConstants.backRightMotor = backRightMotor;
-
-            MecanumConstants.frontLeftMotor.setInverted(true);
-            MecanumConstants.backLeftMotor.setInverted(true);
-            MecanumConstants.backRightMotor.setInverted(true);
-            MecanumConstants.frontRightMotor.setInverted(true);
-
-            MecanumConstants.frontLeftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            MecanumConstants.frontRightMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            MecanumConstants.backLeftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            MecanumConstants.backRightMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-
-            MecanumConstants.frontLeftMotor.stopAndResetEncoder();
-            MecanumConstants.frontRightMotor.stopAndResetEncoder();
-            MecanumConstants.backLeftMotor.stopAndResetEncoder();
-            MecanumConstants.backRightMotor.stopAndResetEncoder();
-
+        public static void initConstants(Motor frontLeftMotor, Motor frontRightMotor, Motor backLeftMotor, Motor backRightMotor, boolean auto) {
+            turningMotors.addAll(List.of(frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor));
+            for(Motor m : turningMotors) {
+                m.setInverted(true);
+                m.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+                m.stopAndResetEncoder();
+                if(auto) {
+                    m.setDistancePerPulse(distancePerPulseInches);
+                }
+            }
         }
     }
 }

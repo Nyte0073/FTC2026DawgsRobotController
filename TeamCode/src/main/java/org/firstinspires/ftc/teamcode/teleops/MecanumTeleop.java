@@ -25,7 +25,7 @@ public final class MecanumTeleop extends CommandOpMode {
                 new Motor(hardwareMap, Constants.MecanumConstants.backLeftMecanumMotor),
                 new Motor(hardwareMap, Constants.MecanumConstants.backRightMecanumMotor)
         };
-        Constants.MecanumConstants.initConstants(motors[0], motors[1], motors[2], motors[3]);
+        Constants.MecanumConstants.initConstants(motors[0], motors[1], motors[2], motors[3], false);
         IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                 RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
