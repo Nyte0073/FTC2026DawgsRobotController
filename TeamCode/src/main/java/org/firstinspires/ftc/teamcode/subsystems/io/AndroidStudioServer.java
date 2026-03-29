@@ -15,9 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**Class for communicating between Android Studio and IntelliJ. This class acts like a networking bridge to send information about the robot's current
+ * state to a class in IntelliJ that can transform the data into UI in a Java Swing class, which itself can be used for monitoring the robot's functions
+ * performance.*/
 public class AndroidStudioServer {
+
+    /**Tool to use transform and serialize all RobotSpecs-related classes into JSON Strings that can be sent over to a receiver class in
+     * IntelliJ IDEA.*/
     private final Gson gson = new Gson();
+
+    /**Reference to the supplier of the information about the robot to send over a network to a connected socket in IntelliJ.*/
     private final Supplier<RobotSpecs> robotSpecsSupplier;
+
+    /**Collection of al the threads used to make the networking system function, in terms of both sending and receiving.*/
     private final List<Thread> threads = new ArrayList<>();
 
     @SuppressWarnings("all")
@@ -25,6 +35,9 @@ public class AndroidStudioServer {
         this.robotSpecsSupplier = robotSpecsSupplier;
     }
 
+    /**Launches the server that IntelliJ will connect to once the receiver class starts its main method. This method initializes the
+     * server socket that is going be used as the network bridge, and then initializes the Reader and Writer objects to write and read to and from
+     * IntelliJ. */
     @SuppressWarnings("all")
     public void launchSendingServer() {
         try {
@@ -51,6 +64,8 @@ public class AndroidStudioServer {
         }
     }
 
+    /**Launches the part of the server that will receive and log messages sent from IntelliJ to Android Studio, possibly about
+     * any success with sending over classes containing information about the robot.*/
     @SuppressWarnings("all")
     public void launchReceivingServer(BufferedReader inputStream) {
         threads.add(Thread.currentThread());
@@ -65,6 +80,7 @@ public class AndroidStudioServer {
         }
     }
 
+    /**Stops all threads in the case of an emergency.*/
     @SuppressWarnings("all")
     public void interruptAllThreads() {
         for(Thread t : threads) {

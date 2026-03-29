@@ -13,11 +13,25 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
  * to 360 / 0.25 = 1440 ticks by tracking the distance in terms of the degrees.*/
 public class AngularPIDModule implements PIDModule {
 
+    /**Motor controller by this module's PIDController output, used for it's {@code getDistance()} method to
+     * give the PIDController a reference point generate an error value.*/
     private final Motor motor;
+
+    /**Reference to the networking system between the robot and the driver hub to deliver over the robot's specs.*/
     private final Telemetry telemetry;
+
+    /**Controller used for calculating motor output based on the error between the target position of the controller and
+     * the current position of the motor.*/
     private final PIDController pidController;
+
+    /**The target position of the PIDController.*/
     private double target;
 
+    /**Constructs a new {@code AngularPIDModule()} with an initialized {@code telemetry} Telemetry,
+     * {@code motor} Motor, and {@code pidController} PIDController. This constructor also sets the distance per pulse of
+     * its corresponding motor to amount of ticks per angle to be able to convert between ticks and angles using {@code getDistance()}.,
+     * and also resets the PIDController before it is used in the code below.
+     * */
     public AngularPIDModule(Telemetry telemetry, Motor motor, double kP, double kS, double kD) {
         this.telemetry = telemetry;
         this.motor = motor;

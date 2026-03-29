@@ -5,8 +5,6 @@ import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.Swe
 import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.SwerveConstants.swerveKp;
 
 import android.util.Log;
-
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;

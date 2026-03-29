@@ -127,9 +127,7 @@ public final class Constants {
         /*String id's for the motors used on the mecanum drivetrain.*/
         public static final String frontLeftMecanumMotor = "frontLeftMecanumMotor", frontRightMecanumMotor = "frontRightMecanumMotor",
                 backLeftMecanumMotor = "backLeftMecanumMotor", backRightMecanumMotor = "backRightMecanumMotor";
-
         public static final double mecanumKp = 0.01, mecanumKs = 0, mecanumKd = 0.005;
-
         public static final double distancePerPulseInches = 0.02619428, distancePerPulseAngle = 0.25;
         public static final List<Motor> turningMotors = new ArrayList<>();
 
