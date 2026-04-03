@@ -78,4 +78,9 @@ public class AngularPIDModule implements PIDModule {
     public Motor getMotor() {
         return motor;
     }
+
+    @Override
+    public double getError() {
+        return pidController.getPositionError();
+    }
 }

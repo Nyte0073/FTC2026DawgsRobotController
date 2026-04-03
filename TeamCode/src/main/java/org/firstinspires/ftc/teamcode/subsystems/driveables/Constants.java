@@ -1,11 +1,17 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.pid.IMUAngularModule;
+import org.firstinspires.ftc.teamcode.pid.LinearPIDModule;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.swerve.SwerveModule;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -18,6 +24,9 @@ public final class Constants {
     public static final int fieldLength = 144;
 
     public static final double deadZoneTolerance = 0.12, degreePercentageToDegrees = 360;
+
+    /**Telemetry to use to send information from the robot to the FTCDashboard.*/
+    public static final Telemetry telemetry = FtcDashboard.getInstance().getTelemetry();
 
     public static final List<GamepadKeys.Button> buttons = List.of(
             GamepadKeys.Button.DPAD_DOWN,
@@ -106,7 +115,6 @@ public final class Constants {
             leftMotor.stopAndResetEncoder();
             rightMotor.stopAndResetEncoder();
             rightMotor.setInverted(true);
-
             if(auto) {
                TankConstants.leftMotor.setRunMode(Motor.RunMode.PositionControl);
                TankConstants.rightMotor.setRunMode(Motor.RunMode.PositionControl);
@@ -114,7 +122,6 @@ public final class Constants {
                 TankConstants.leftMotor.setRunMode(Motor.RunMode.RawPower);
                 TankConstants.rightMotor.setRunMode(Motor.RunMode.RawPower);
             }
-
             TankConstants.leftMotor.setPositionTolerance(tolerance);
             TankConstants.rightMotor.setPositionTolerance(tolerance);
         }
@@ -127,21 +134,32 @@ public final class Constants {
         /*String id's for the motors used on the mecanum drivetrain.*/
         public static final String frontLeftMecanumMotor = "frontLeftMecanumMotor", frontRightMecanumMotor = "frontRightMecanumMotor",
                 backLeftMecanumMotor = "backLeftMecanumMotor", backRightMecanumMotor = "backRightMecanumMotor";
-        public static final double mecanumKp = 0.01, mecanumKs = 0, mecanumKd = 0.005;
-        public static final double distancePerPulseInches = 0.02619428, distancePerPulseAngle = 0.25;
+
+        /**P, I and D coefficients to be used in the PID system for autos to have control over how the motor power is set to
+         * the robot depending on the error between it and its target position.*/
+        public static final double mecanumKp = 0.08, mecanumKs = 0, mecanumKd = 0.00297;
+
+        /***/
+        public static final double distancePerPulseInches = 0.03343806, distancePerPulseAngle = 0.25;
         public static final List<Motor> turningMotors = new ArrayList<>();
+        //1.52253517
+
+        public static final LinkedHashMap<Motor, LinearPIDModule> mecanumPIDModules = new LinkedHashMap<>();
+        public static final LinkedHashMap<Motor, IMUAngularModule> mecanumAngularIMUPIDModules = new LinkedHashMap<>();
 
         /**Initializes the mecanum motors by setting them all inverted and filling their mutable references.*/
-        public static void initConstants(Motor frontLeftMotor, Motor frontRightMotor, Motor backLeftMotor, Motor backRightMotor, boolean auto) {
+        public static void initConstants(Motor frontLeftMotor, Motor frontRightMotor, Motor backLeftMotor, Motor backRightMotor, boolean auto, IMU imu) {
             turningMotors.addAll(List.of(frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor));
             for(Motor m : turningMotors) {
                 m.setInverted(true);
-               // m.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+                m.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
                 m.stopAndResetEncoder();
                 m.setRunMode(Motor.RunMode.RawPower);
                 if(auto) {
                     m.setDistancePerPulse(distancePerPulseInches);
                 }
+                mecanumPIDModules.put(m, new LinearPIDModule(m, mecanumKp, mecanumKs, mecanumKd));
+                mecanumAngularIMUPIDModules.put(m, new IMUAngularModule(imu, mecanumKp, mecanumKs, mecanumKd, m));
             }
         }
     }

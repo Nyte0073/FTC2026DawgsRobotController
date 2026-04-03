@@ -27,4 +27,6 @@ public interface PIDModule {
     /**@return The motor object used to find the distance ({@code getDistance()}) traveled in order for the PIDController to generate an error
      * value and calculate output.*/
     Motor getMotor();
+
+    double getError();
 }

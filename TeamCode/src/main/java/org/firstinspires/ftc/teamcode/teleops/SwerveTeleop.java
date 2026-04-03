@@ -14,11 +14,6 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.swerve.SwerveDrive;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.swerve.SwerveModule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @TeleOp(name = "SwerveTeleop", group = "teamcode")
 public class SwerveTeleop extends CommandOpMode {
 

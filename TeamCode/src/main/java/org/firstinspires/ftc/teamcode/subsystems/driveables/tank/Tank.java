@@ -6,7 +6,6 @@ import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.Tan
 import com.arcrobotics.ftclib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Driveable;
 
 import java.util.function.Supplier;
@@ -36,7 +35,7 @@ public abstract class Tank extends SubsystemBase implements Driveable {
         double x = driverXSupplier.get();
         double[] motorPowers = calculateMotorPowers(y, x);
         leftMotor.set(motorPowers[0]);
-        Constants.TankConstants.rightMotor.set(motorPowers[1]);
+        rightMotor.set(motorPowers[1]);
     }
 
     @Override
