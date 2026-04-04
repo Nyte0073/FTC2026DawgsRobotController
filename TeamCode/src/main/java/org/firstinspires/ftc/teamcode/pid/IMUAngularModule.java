@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystem_math.SwerveMath;
 
@@ -40,7 +41,7 @@ public class IMUAngularModule implements PIDModule {
     @Override
     public double calculate() {
         double error = SwerveMath.normalizeHeading(target, getDistance());
-        return controller.calculate(error, target);
+        return Math.abs(controller.calculate(error, target));
     }
 
     @Override
@@ -66,5 +67,10 @@ public class IMUAngularModule implements PIDModule {
     @Override
     public double getError() {
         return SwerveMath.normalizeHeading(controller.getPositionError(), 0);
+    }
+
+    @Override
+    public Telemetry getTelemetry() {
+        return telemetry;
     }
 }

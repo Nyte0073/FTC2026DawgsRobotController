@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.pid;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public interface PIDModule {
 
     /**@return The set setpoint of the PIDController (in whatever unit you're converting ticks from).*/
@@ -28,5 +30,8 @@ public interface PIDModule {
      * value and calculate output.*/
     Motor getMotor();
 
+    /**@return The difference between the current position of the robot's pid controller and the set target position.*/
     double getError();
+
+    Telemetry getTelemetry();
 }

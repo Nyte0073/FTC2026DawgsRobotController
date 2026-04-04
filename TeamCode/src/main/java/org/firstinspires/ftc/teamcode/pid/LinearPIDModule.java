@@ -81,6 +81,7 @@ public class LinearPIDModule implements PIDModule {
         return motor;
     }
 
+    @Override
     public Telemetry getTelemetry() {
         return telemetry;
     }
