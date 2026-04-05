@@ -51,7 +51,6 @@ public class LinearPIDModule implements PIDModule {
         telemetry.addData("Distance: ", getDistance());
         telemetry.addData("PID Error between target position and current position: ", pidController.getPositionError());
         telemetry.addData("Target: ", getTarget());
-        telemetry.update();
     }
 
     @Override

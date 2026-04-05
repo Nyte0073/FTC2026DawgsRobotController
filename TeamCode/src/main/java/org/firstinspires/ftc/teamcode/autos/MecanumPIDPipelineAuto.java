@@ -10,8 +10,11 @@ import org.firstinspires.ftc.teamcode.pid.PIDControllerPipeline;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import java.util.List;
 
-@Autonomous(name = "MecanumAuto", group = "teamcode")
-public class MecanumTurnAuto extends CommandOpMode {
+/**Class for making mecanum-controlled robot turn certain degrees and drive a certain distance in straight lines, using PID
+ * controllers and encoders to keep track of the robot's position. This class can chain multiple paths so that the robot can rotate
+ * and travel to multiple positions along the field.*/
+@Autonomous(name = "MecanumPIDPipelineAuto", group = "teamcode")
+public class MecanumPIDPipelineAuto extends CommandOpMode {
 
     @Override
     public void initialize() {

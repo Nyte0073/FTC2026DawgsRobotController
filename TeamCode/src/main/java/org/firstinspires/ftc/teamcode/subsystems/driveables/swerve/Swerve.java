@@ -62,5 +62,8 @@ public abstract class Swerve extends SubsystemBase implements Driveable {
      * original drive vector inputted from human driver's gamepad.*/
     public abstract void calculateSwerveModuleHeadingsAndDrive(boolean rotating, boolean clockwise, Vector driverVector, int currentRobotOrientation);
 
+    /**@return The threads that are used for initializing the Android Studio send and receive servers built to send data about the robot from it to
+     * IntelliJ IDEA for monitoring, and then receiving messages from IntelliJ to it to get input on what has been received by IntelliJ IDEA from
+     * Android Studio.*/
     public abstract Thread[] getRobotThreads();
 }

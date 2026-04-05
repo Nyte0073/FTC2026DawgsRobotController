@@ -83,4 +83,9 @@ public class AngularPIDModule implements PIDModule {
     public double getError() {
         return pidController.getPositionError();
     }
+
+    @Override
+    public Telemetry getTelemetry() {
+        return telemetry;
+    }
 }
