@@ -50,8 +50,7 @@ public class IMUAngularModule implements PIDModule {
 
     @Override
     public double calculate() {
-        double error = SwerveMath.normalizeHeading(target, getDistance());
-        return Math.abs(controller.calculate(error, target));
+        return Math.abs(controller.calculate(getDistance()));
     }
 
     @Override
@@ -62,6 +61,7 @@ public class IMUAngularModule implements PIDModule {
     @Override
     public void setTarget(double target) {
         this.target = SwerveMath.normalizeHeading(target, 0);
+        controller.setSetPoint(this.target);
     }
 
     @Override
