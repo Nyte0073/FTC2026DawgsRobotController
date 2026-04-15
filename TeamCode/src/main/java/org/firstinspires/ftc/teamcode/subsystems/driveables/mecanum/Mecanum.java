@@ -6,7 +6,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Driveable;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 
@@ -38,25 +38,21 @@ public abstract class Mecanum extends SubsystemBase implements Driveable {
 
     @Override
     public void periodic() {
-        Vector driverVector = driverVectorSupplier.get();
-        telemetry.addData("Current Robot Orientation: ", currentRobotOrientationSupplier.get());
-        telemetry.addData("X: ", driverVector.getX());
-        telemetry.addData("Y: ", driverVector.getY());
-        Log.i(getName(), "Periodic running.");
-        telemetry.addData("Front Left Distance: ", Constants.MecanumConstants.turningMotors.get(0).encoder.getDistance());
-        telemetry.addData("Front Right Distance: ", Constants.MecanumConstants.turningMotors.get(1).encoder.getDistance());
-        telemetry.addData("Back Left Distance: ", Constants.MecanumConstants.turningMotors.get(2).encoder.getDistance());
-        telemetry.addData("Back Right Distance: ", Constants.MecanumConstants.turningMotors.get(3).encoder.getDistance());
+        telemetry.addData("Current Orientation", getIMU().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        telemetry.addData("First motor encoder distance", getMotors().get(0).encoder.getDistance());
+        telemetry.addData("Second Motor Encoder distance", getMotors().get(1).encoder.getDistance());
+        telemetry.addData("Third Motor Encoder distance", getMotors().get(2).encoder.getDistance());
+        telemetry.addData("Fourth Motor Encoder distance", getMotors().get(3).encoder.getDistance());
         telemetry.update();
 }
 
-@Override
+    @Override
     public void drive() {
         Vector driverVector = driverVectorSupplier.get();
-        Log.i(getName(), "Calculating motor owers.");
+        Log.i(getName(), "Calculating motor powers.");
         calculateMotorPowers(currentRobotOrientationSupplier.get(), driverVector);
     }
-
+/*front left back right*/
     @Override
     public void stop() {
         stopMotors();

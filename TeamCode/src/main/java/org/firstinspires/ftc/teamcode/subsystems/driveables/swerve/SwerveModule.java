@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.subsystem_math.SwerveMath;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 
+import java.util.LinkedList;
+
 /**Class representing a drive motor-turn motor pair and the calculations necessary in order to
  * make module travel in the right direction to make the robot translate and/or rotate to where it wants.*/
 public class SwerveModule {
@@ -45,7 +47,7 @@ public class SwerveModule {
         this.positionVector = positionVector.deepCopy();
         this.rotatingMotor.setInverted(true);
         this.rotatingMotor.encoder.setDirection(Motor.Direction.REVERSE);
-        pidModule = new AngularPIDModule(telemetry, this.rotatingMotor, swerveKp, swerveKi, swerveKd);
+        pidModule = new AngularPIDModule(telemetry, new LinkedList<>(), swerveKp, swerveKi, swerveKd);
     }
 
     /**@return The current normalized orientation of the module, within the range of 0 to 360 degrees.*/

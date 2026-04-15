@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.pid;
 
-import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.controller.PIDController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -26,12 +26,11 @@ public interface PIDModule {
     /**@return If the motor is within a specified tolerance range of the PIDController's set setpoint.*/
     boolean atTarget();
 
-    /**@return The motor object used to find the distance ({@code getDistance()}) traveled in order for the PIDController to generate an error
-     * value and calculate output.*/
-    Motor getMotor();
-
     /**@return The difference between the current position of the robot's pid controller and the set target position.*/
     double getError();
 
+    /**@return The telemetry object used to send information from the robot to the FTC Dashboard.*/
     Telemetry getTelemetry();
+
+    PIDController getController();
 }

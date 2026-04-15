@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 import java.util.function.Predicate;
@@ -46,6 +47,33 @@ public final class MecanumCommand extends CommandBase {
             if (buttonPredicate.test(b)) {
                 mecanumDrive.switchActions(b);
             }
+        }
+    }
+
+    /**Class for controlling a Mecanum drivetrain by the vector in the {@link FactoryConstants} class
+     * being used to supply the drive motion of the robot to apply to the robot's drive command system. */
+    public static final class VectorMecanumCommand extends CommandBase {
+
+        /**The vector that will be edited and sent over to the {@link MecanumDrive} class to make
+         * the robot drive a certain way.*/
+        private final Vector driverVector;
+
+        /**Reference to the Mecanum drive object making the robot drive with specific motor powers.*/
+        private final MecanumDrive drive;
+
+        /**Constructs a new {@code VectorMecanumCommand()} with initialized {@code driverVector} Vector and
+         * {@code drive} MecanumDrive.*/
+        public VectorMecanumCommand(Vector driverVector, MecanumDrive drive) {
+            this.driverVector = driverVector;
+            this.drive = drive;
+        }
+
+        @Override
+        public void execute() {
+            driverVector.setX(-FactoryConstants.MathConfig.DRIVE_VECTOR.getX());
+            driverVector.setY(-FactoryConstants.MathConfig.DRIVE_VECTOR.getY());
+            driverVector.setZ(-FactoryConstants.MathConfig.DRIVE_VECTOR.getZ());
+            drive.drive();
         }
     }
 }

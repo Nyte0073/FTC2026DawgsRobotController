@@ -8,6 +8,8 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 
+import java.util.LinkedList;
+
 /**Class to be used when wanting to use a PID system to make a motor travel a certain distance in inches.
  *To convert from inches to ticks, you divide the inches by inches per tick (DPP) to get the ticks, and for inches,
  * since the DPP is 4π / 1440 ≈ 0.00873, then that means you can set the amount inches you want to travel in the {@code setTarget()}
@@ -20,7 +22,7 @@ public class LinearPIDModule implements PIDModule {
 
     /**Motor controller by this module's PIDController output, used for it's {@code getDistance()} method to
      * give the PIDController a reference point generate an error value.*/
-    private final Motor motor;
+    private final LinkedList<Motor> motors = new LinkedList<>();
 
     /**Controller used for calculating motor output based on the error between the target position of the controller and
      * the current position of the motor.*/
@@ -34,9 +36,11 @@ public class LinearPIDModule implements PIDModule {
      * its corresponding motor to amount of ticks per inches to be able to convert between ticks and inches using {@code getDistance()}.,
      * and also resets the PIDController before it is used in the code below.
      * */
-    public LinearPIDModule(Motor turningMotor, double kP, double kS, double kD) {
-        this.motor = turningMotor;
-        this.motor.setDistancePerPulse(Constants.MecanumConstants.distancePerPulseInches);
+    public LinearPIDModule(LinkedList<Motor> motors, double kP, double kS, double kD) {
+        this.motors.addAll(motors);
+        for(Motor m : this.motors) {
+            m.setDistancePerPulse(Constants.MecanumConstants.distancePerPulseInches);
+        }
         pidController = new PIDController(kP, kS, kD);
         pidController.reset();
     }
@@ -55,13 +59,16 @@ public class LinearPIDModule implements PIDModule {
 
     @Override
     public double calculate() {
-        telemetry.addData("Motor Error: ", pidController.getPositionError());
         return pidController.calculate(getDistance());
     }
 
     @Override
     public double getDistance() {
-        return motor.getDistance();
+        double distance = 0;
+        for(Motor m : motors) {
+            distance += m.getDistance();
+        }
+        return distance / motors.size();
     }
 
     @Override
@@ -72,12 +79,7 @@ public class LinearPIDModule implements PIDModule {
 
     @Override
     public boolean atTarget() {
-        return Math.abs(pidController.getPositionError()) < 0.05;
-    }
-
-    @Override
-    public Motor getMotor() {
-        return motor;
+        return Math.abs(pidController.getPositionError()) < 2;
     }
 
     @Override
@@ -88,5 +90,10 @@ public class LinearPIDModule implements PIDModule {
     @Override
     public double getError() {
         return pidController.getPositionError();
+    }
+
+    @Override
+    public PIDController getController() {
+        return pidController;
     }
 }

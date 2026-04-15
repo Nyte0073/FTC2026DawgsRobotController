@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.pid;
 import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.telemetry;
 
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -24,15 +23,11 @@ public class IMUAngularModule implements PIDModule {
     /**The target of the of the controller producing motor error output based on angular error reported from the robot's imu system.*/
     private double target = 0;
 
-    /**Reference to the motor that this PIDController is sending error output to.*/
-    private final Motor motor;
-
-    public IMUAngularModule(IMU imu, double kP, double kS, double kD, Motor motor) {
-        controller = new PIDController(kP, kS, kD);
-        controller.reset();
+    public IMUAngularModule(IMU imu, double kP, double kS, double kD) {
         this.imu = imu;
         this.imu.resetYaw();
-        this.motor = motor;
+        controller = new PIDController(kP, kS, kD);
+        controller.reset();
     }
 
     @Override
@@ -45,12 +40,13 @@ public class IMUAngularModule implements PIDModule {
         telemetry.addData("Target", getTarget());
         telemetry.addData("Position Error", getError());
         telemetry.addData("At target", atTarget());
+        getDistance();
         telemetry.update();
     }
 
     @Override
     public double calculate() {
-        return Math.abs(controller.calculate(getDistance()));
+        return controller.calculate(getDistance());
     }
 
     @Override
@@ -66,12 +62,7 @@ public class IMUAngularModule implements PIDModule {
 
     @Override
     public boolean atTarget() {
-        return Math.abs(controller.getPositionError()) < 0.05;
-    }
-
-    @Override
-    public Motor getMotor() {
-        return motor;
+        return Math.abs(controller.getPositionError()) < 6;
     }
 
     @Override
@@ -82,5 +73,10 @@ public class IMUAngularModule implements PIDModule {
     @Override
     public Telemetry getTelemetry() {
         return telemetry;
+    }
+
+    @Override
+    public PIDController getController() {
+        return controller;
     }
 }

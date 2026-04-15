@@ -1,11 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables.swerve;
 
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.robotcore.hardware.IMU;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.io.AndroidStudioServer;
 import org.firstinspires.ftc.teamcode.subsystems.io.RobotSpecs;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class SwerveDrive extends Swerve {
@@ -54,5 +59,35 @@ public class SwerveDrive extends Swerve {
         } else {
             return robotThreads;
         }
+    }
+
+    @Override
+    public List<Motor> getMotors() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public IMU getIMU() {
+        return null;
+    }
+
+    @Override
+    public void invertLeftSideEncoders(boolean inverted) {
+
+    }
+
+    @Override
+    public void invertRightSideEncoders(boolean inverted) {
+
+    }
+
+    @Override
+    public void invertLeftSideMotors(boolean inverted) {
+
+    }
+
+    @Override
+    public void invertRightSideMotors(boolean inverted) {
+
     }
 }

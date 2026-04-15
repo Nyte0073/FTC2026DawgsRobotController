@@ -66,7 +66,7 @@ public final class Constants {
         public static SwerveModule frontLeftModule, frontRightModule, backLeftModule, backRightModule;
         public static final List<SwerveModule> swerveModules = new ArrayList<>();
         public static final double swerveTolerance = 0.08,
-        swerveKp = 0.01, swerveKi = 0, swerveKd = 0.0005;
+                swerveKp = 0.01, swerveKi = 0, swerveKd = 0.0005;
 
         public static void initConstants(SwerveModule frontLeftModule, SwerveModule frontRightModule, SwerveModule backLeftModule, SwerveModule backRightModule) {
             SwerveConstants.frontLeftModule = frontLeftModule;
@@ -116,8 +116,8 @@ public final class Constants {
             rightMotor.stopAndResetEncoder();
             rightMotor.setInverted(true);
             if(auto) {
-               TankConstants.leftMotor.setRunMode(Motor.RunMode.PositionControl);
-               TankConstants.rightMotor.setRunMode(Motor.RunMode.PositionControl);
+                TankConstants.leftMotor.setRunMode(Motor.RunMode.PositionControl);
+                TankConstants.rightMotor.setRunMode(Motor.RunMode.PositionControl);
             } else {
                 TankConstants.leftMotor.setRunMode(Motor.RunMode.RawPower);
                 TankConstants.rightMotor.setRunMode(Motor.RunMode.RawPower);
@@ -151,18 +151,22 @@ public final class Constants {
         public static void initConstants(Motor frontLeftMotor, Motor frontRightMotor, Motor backLeftMotor, Motor backRightMotor, boolean auto, IMU imu) {
             turningMotors.addAll(List.of(frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor));
             for(Motor m : turningMotors) {
-                m.setInverted(true);
-                m.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+//                m.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
                 m.stopAndResetEncoder();
                 m.setRunMode(Motor.RunMode.RawPower);
                 if(auto) {
                     m.setDistancePerPulse(distancePerPulseInches);
+                    frontLeftMotor.encoder.setDirection(Motor.Direction.REVERSE);
+                    backLeftMotor.encoder.setDirection(Motor.Direction.REVERSE);
+                    frontRightMotor.encoder.setDirection(Motor.Direction.REVERSE);
+                    backRightMotor.encoder.setDirection(Motor.Direction.REVERSE);
+                    frontLeftMotor.setInverted(true);
+                    backLeftMotor.setInverted(true);
                 }
-                mecanumPIDModules.put(m, new LinearPIDModule(m, mecanumKp, mecanumKs, mecanumKd));
-                mecanumAngularIMUPIDModules.put(m, new IMUAngularModule(imu, mecanumKp, mecanumKs, mecanumKd, m));
             }
         }
     }
 }
+
 
 
