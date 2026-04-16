@@ -136,6 +136,12 @@ public class PIDControllerPipeline {
                 m.resetEncoder();
             }
             imu.resetYaw();
+            if(strafe) {
+                /*todo back left encoder needs to be reversed,
+                 *  front right encoder needs to be reversed as well.*/
+                motors.get(1).encoder.setDirection(Motor.Direction.FORWARD);
+                motors.get(2).encoder.setDirection(Motor.Direction.FORWARD);
+            }
         }
     }
 }

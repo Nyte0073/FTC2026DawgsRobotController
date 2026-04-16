@@ -4,12 +4,14 @@ import android.util.Log;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Driveable;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 /**Class to extending when wanting to create and run a mecanum drivetrain. This class is where all the calculated values for the
@@ -38,11 +40,12 @@ public abstract class Mecanum extends SubsystemBase implements Driveable {
 
     @Override
     public void periodic() {
+        List<Motor> motors = getMotors();
         telemetry.addData("Current Orientation", getIMU().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        telemetry.addData("First motor encoder distance", getMotors().get(0).encoder.getDistance());
-        telemetry.addData("Second Motor Encoder distance", getMotors().get(1).encoder.getDistance());
-        telemetry.addData("Third Motor Encoder distance", getMotors().get(2).encoder.getDistance());
-        telemetry.addData("Fourth Motor Encoder distance", getMotors().get(3).encoder.getDistance());
+        telemetry.addData("First motor encoder distance", motors.get(0).encoder.getDistance());
+        telemetry.addData("Second Motor Encoder distance", motors.get(1).encoder.getDistance());
+        telemetry.addData("Third Motor Encoder distance", motors.get(2).encoder.getDistance());
+        telemetry.addData("Fourth Motor Encoder distance", motors.get(3).encoder.getDistance());
         telemetry.update();
 }
 
