@@ -9,10 +9,14 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryCon
 import java.util.LinkedList;
 import java.util.List;
 
+/**This class is used to generate collections and turn and move commands (controlled by angular and linear PID systems) to make
+ * the robot turn and move to specific angles/intervals in inches.*/
 public class DriveablePIDFactory implements PIDFactory {
 
+    /*Instance of this class to be used to access the instance-specific command group creation method.*/
     private static DriveablePIDFactory instance;
 
+    /**@return The instance variable used to access the instance-specific command group creation method.*/
     public static DriveablePIDFactory getInstance() {
         if(instance == null) {
             instance = new DriveablePIDFactory();

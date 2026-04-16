@@ -17,13 +17,21 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.mecanum.MecanumDrive
 
 import java.util.LinkedList;
 
+/**Factory to call to create new mecanum drivetrain instances easily with two methods, one for drivetrain creation and one for the drivetrain
+ * command creation.*/
 public class MecanumDriveFactory implements DrivetrainFactory {
 
+    /*The instance of this class that can be accessed to statically to get access to the instance-specific drivetrain and drive command
+    * creation methods.*/
     private static MecanumDriveFactory instance;
+
+    /**The vector to be used to update the drivetrain with user-inputted from the Vector in the {@link FactoryConstants} class.*/
     private final Vector driverVector = new Vector();
 
+    /*Constructs a new instance of this class, but only for the one instance that can be accessed statically.*/
     private MecanumDriveFactory() {}
 
+    /**@return The instance of this class that be used to access the instance-specific drivetrain and drive command creation methods.*/
     public static MecanumDriveFactory getInstance() {
         if(instance == null) {
             instance = new MecanumDriveFactory();

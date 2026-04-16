@@ -20,9 +20,9 @@ public class ServoTest extends CommandOpMode {
         Constants.telemetry.addLine("Servo has initialized properly.");
         Constants.telemetry.update();
     }
-
+/*70*/
     @Override
     public void run() {
-        servoEx.turnToAngle(-70);
+        servoEx.turnToAngle(0);
     }
 }

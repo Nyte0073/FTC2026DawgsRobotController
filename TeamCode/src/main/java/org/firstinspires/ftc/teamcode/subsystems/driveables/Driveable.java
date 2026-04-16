@@ -15,15 +15,22 @@ public interface Driveable {
      * for hardware other than the driving and steering motors of the robot's drivetrain.*/
     void stop();
 
+    /**@return The collection of motors used for the robot's drivetrain.*/
     List<Motor> getMotors();
 
+    /**@return The gyroscope system used to return the current angle the robot is oriented to on the the field relative to a direction called
+     * 0 degrees.*/
     IMU getIMU();
 
+    /**Sets whether the encoders of the left side motors of the robot are reversed or not.*/
     void invertLeftSideEncoders(boolean inverted);
 
+    /**Sets whether the encoders of the right side motors of the robot are reversed or not.*/
     void invertRightSideEncoders(boolean inverted);
 
+    /**Sets whether the left side motors of the robot are reversed or not.*/
     void invertLeftSideMotors(boolean inverted);
 
+    /**Sets whether the right side motors of the robot are reevrsed or not.*/
     void invertRightSideMotors(boolean inverted);
 }
