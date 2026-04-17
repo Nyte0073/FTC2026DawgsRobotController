@@ -27,11 +27,12 @@ public class DriveablePIDFactory implements PIDFactory {
     @Override
     public SequentialCommandGroup buildCommandGroup(Driveable driveable, List<PathSegment> anglesAndInches) {
         final SequentialCommandGroup commandGroup = new SequentialCommandGroup();
+        driveable.getMotors();
+        driveable.getIMU();
         for(PathSegment segment : anglesAndInches) {
             PIDControllerPipeline pipeline = new PIDControllerPipeline(FactoryConstants.MathConfig.DRIVE_VECTOR, new LinkedList<>(
                     driveable.getMotors()
-            ),
-                    driveable.getIMU(), segment.angle, segment.inches, segment.strafe);
+            ), driveable.getIMU(), segment.angle, segment.inches, segment.strafe);
             commandGroup.addCommands(pipeline.getTurnToCommand(), pipeline.getMoveCommand());
         }
         return commandGroup;

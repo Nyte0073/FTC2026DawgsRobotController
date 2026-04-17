@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autos;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -28,11 +29,12 @@ public class MecanumPIDPipelineAuto extends CommandOpMode {
         drive.invertRightSideMotors(true);
         drive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         schedule(DriveablePIDFactory.getInstance().buildCommandGroup(drive, List.of(
-                new PathSegment(-90, 40, false),
-                new PathSegment(90,  65,  false),
-                new PathSegment(170, 50, false),
-                new PathSegment(-90, 45, false))));
+                new PathSegment(-90, 40, true))));
     }
 
-
+    @Override
+    public void reset() {
+        super.reset();
+        CommandScheduler.getInstance().cancelAll();
+    }
 }

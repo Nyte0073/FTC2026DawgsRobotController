@@ -11,8 +11,8 @@ public class RobotSpecs {
     }
 
     public static final class MotorSpecs {
-        private final double motorPower;
-        private final double currentMotorPosition;
+        public final double motorPower;
+        public final double currentMotorPosition;
 
         public MotorSpecs(double motorPower, double currentMotorPosition) {
             this.motorPower = motorPower;
@@ -21,8 +21,8 @@ public class RobotSpecs {
     }
 
     public static final class OrientationSpecs {
-        private final double currentOrientationDegrees;
-        private final double currentOrientationRadians;
+        public final double currentOrientationDegrees;
+        public final double currentOrientationRadians;
 
         public OrientationSpecs(double currentOrientationDegrees, double currentOrientationRadians) {
             this.currentOrientationRadians = currentOrientationRadians;

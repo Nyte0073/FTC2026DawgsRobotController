@@ -43,7 +43,7 @@ public class MecanumDriveFactory implements DrivetrainFactory {
         IMU imu = hardwareMap.get(
                 IMU.class, FactoryConstants.SensorConfig.IMU_ID
         );
-        imu.resetYaw();
+       imu.resetYaw();
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                 RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
         imu.initialize(parameters);
