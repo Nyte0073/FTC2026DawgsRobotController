@@ -1,13 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables.tank;
 
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.TankConstants.leftMotor;
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.TankConstants.rightMotor;
-
 import com.arcrobotics.ftclib.command.SubsystemBase;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Driveable;
-
 import java.util.function.Supplier;
 
 /**Class to extend when wanting to implement a Tank drivetrain. This class will calculate the correct powers to the to the
@@ -33,9 +28,7 @@ public abstract class Tank extends SubsystemBase implements Driveable {
     public void drive() {
         double y = driverYSupplier.get();
         double x = driverXSupplier.get();
-        double[] motorPowers = calculateMotorPowers(y, x);
-        leftMotor.set(motorPowers[0]);
-        rightMotor.set(motorPowers[1]);
+        calculateMotorPowersAndDrive(x, y);
     }
 
     @Override
@@ -44,14 +37,7 @@ public abstract class Tank extends SubsystemBase implements Driveable {
         stopThreads();
     }
 
-    @Override
-    public void periodic() {
-        telemetry.addData("Left Motor Power", leftMotor.get());
-        telemetry.addData("Right Motor Power", rightMotor.get());
-        telemetry.update();
-    }
-
     public abstract void stopMotors();
     public abstract void stopThreads();
-    public abstract double[] calculateMotorPowers(double y, double x);
+    public abstract void calculateMotorPowersAndDrive(double x, double y);
 }

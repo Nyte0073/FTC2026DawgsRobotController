@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.pid;
 
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.telemetry;
-
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystem_math.SwerveMath;
+import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants;
 
 /**Class for making the entire robot rotate to a specified angle with PID adjustments based on the error between the
  * current and target angle.*/
@@ -37,11 +36,11 @@ public class IMUAngularModule implements PIDModule {
 
     @Override
     public void update() {
-        telemetry.addData("Target", getTarget());
-        telemetry.addData("Position Error", getError());
-        telemetry.addData("At target", atTarget());
+        FactoryConstants.SensorConfig.DASHBOARD_TELEMETRY.addData("Target", getTarget());
+        FactoryConstants.SensorConfig.DASHBOARD_TELEMETRY.addData("Position Error", getError());
+        FactoryConstants.SensorConfig.DASHBOARD_TELEMETRY.addData("At target", atTarget());
         getDistance();
-        telemetry.update();
+        FactoryConstants.SensorConfig.DASHBOARD_TELEMETRY.update();
     }
 
     @Override
@@ -72,7 +71,7 @@ public class IMUAngularModule implements PIDModule {
 
     @Override
     public Telemetry getTelemetry() {
-        return telemetry;
+        return FactoryConstants.SensorConfig.DASHBOARD_TELEMETRY;
     }
 
     @Override

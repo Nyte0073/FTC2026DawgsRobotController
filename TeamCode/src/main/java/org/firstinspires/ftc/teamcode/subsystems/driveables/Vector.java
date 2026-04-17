@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables;
 
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.tolerance;
+
 import org.firstinspires.ftc.teamcode.subsystems.driveables.swerve.SwerveModule;
 
 import java.util.HashMap;
@@ -51,7 +53,7 @@ public final class Vector {
         Vector v = (Vector) o;
         double x = v.getX();
         double y = v.getY();
-        return Math.abs(x - getX()) <= Constants.tolerance && Math.abs(y - getY()) <= Constants.tolerance;
+        return Math.abs(x - getX()) <= tolerance && Math.abs(y - getY()) <= tolerance;
     }
 
     public void setZ(double z) {

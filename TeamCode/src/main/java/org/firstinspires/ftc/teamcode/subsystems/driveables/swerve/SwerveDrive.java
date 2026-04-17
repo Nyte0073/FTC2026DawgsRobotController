@@ -4,19 +4,23 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.io.AndroidStudioServer;
 import org.firstinspires.ftc.teamcode.subsystems.io.RobotSpecs;
 
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class SwerveDrive extends Swerve {
     private Thread[] robotThreads = null;
-    public SwerveDrive(Supplier<Vector> driverVectorSupplier, Supplier<Integer> currentRobotOrientationSupplier, Telemetry telemetry) {
+    private final LinkedList<SwerveModule> modules = new LinkedList<>();
+    private final IMU imu;
+
+    public SwerveDrive(Supplier<Vector> driverVectorSupplier, Supplier<Integer> currentRobotOrientationSupplier, Telemetry telemetry, LinkedList<SwerveModule> swerveModules, IMU imu) {
         super(driverVectorSupplier, currentRobotOrientationSupplier, telemetry);
+        modules.addAll(swerveModules);
+        this.imu = imu;
     }
 
     @Override
@@ -33,8 +37,7 @@ public class SwerveDrive extends Swerve {
 
     @Override
     public void calculateSwerveModuleHeadingsAndDrive(boolean rotating, boolean clockwise, Vector driverVector, int currentRobotOrientation) {
-        for(SwerveModule swerveModule : Constants.SwerveConstants.swerveModules) {
-//            SwerveModule swerveModule = Constants.SwerveConstants.swerveModules.get(0);
+        for(SwerveModule swerveModule : modules) {
             Vector translatedAndRotatedVector = swerveModule.calculateTranslatedAndRotatedMotorVector(rotating,
                     clockwise, driverVector, driverVector.getZ());
             swerveModule.applyTransAndRotVectorToMotor(translatedAndRotatedVector, currentRobotOrientation);
@@ -63,31 +66,73 @@ public class SwerveDrive extends Swerve {
 
     @Override
     public List<Motor> getMotors() {
-        return Collections.emptyList();
+        List<Motor> motors = new LinkedList<>();
+        for(SwerveModule module : modules) {
+            motors.add(module.rotatingMotor);
+        }
+        return motors;
     }
 
     @Override
     public IMU getIMU() {
-        return null;
+        return imu;
     }
 
     @Override
     public void invertLeftSideEncoders(boolean inverted) {
-
+        if(inverted) {
+           modules.get(0).drivingMotor.encoder.setDirection(Motor.Direction.REVERSE);
+           modules.get(2).drivingMotor.encoder.setDirection(Motor.Direction.REVERSE);
+        } else {
+            modules.get(0).drivingMotor.encoder.setDirection(Motor.Direction.FORWARD);
+            modules.get(2).drivingMotor.encoder.setDirection(Motor.Direction.FORWARD);
+        }
     }
 
     @Override
     public void invertRightSideEncoders(boolean inverted) {
-
+        if(inverted) {
+            modules.get(1).drivingMotor.encoder.setDirection(Motor.Direction.REVERSE);
+            modules.get(3).drivingMotor.encoder.setDirection(Motor.Direction.REVERSE);
+        } else {
+            modules.get(1).drivingMotor.encoder.setDirection(Motor.Direction.FORWARD);
+            modules.get(3).drivingMotor.encoder.setDirection(Motor.Direction.FORWARD);
+        }
     }
 
     @Override
     public void invertLeftSideMotors(boolean inverted) {
-
+        if(inverted) {
+            modules.get(0).drivingMotor.setInverted(true);
+            modules.get(2).drivingMotor.setInverted(true);
+        } else {
+            modules.get(0).drivingMotor.setInverted(false);
+            modules.get(2).drivingMotor.setInverted(false);
+        }
     }
 
     @Override
     public void invertRightSideMotors(boolean inverted) {
+        if(inverted) {
+            modules.get(1).drivingMotor.setInverted(true);
+            modules.get(3).drivingMotor.setInverted(true);
+        } else {
+            modules.get(1).drivingMotor.setInverted(false);
+            modules.get(3).drivingMotor.setInverted(false);
+        }
+    }
 
+    @Override
+    public void resetEncoders() {
+        for(SwerveModule module : modules) {
+            module.drivingMotor.resetEncoder();
+        }
+    }
+
+    @Override
+    public void setZeroPowerBehavior(Motor.ZeroPowerBehavior zeroPowerBehavior) {
+        for(SwerveModule module : modules) {
+            module.drivingMotor.setZeroPowerBehavior(zeroPowerBehavior);
+        }
     }
 }

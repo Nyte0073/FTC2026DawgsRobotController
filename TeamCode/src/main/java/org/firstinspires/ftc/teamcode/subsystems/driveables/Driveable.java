@@ -33,4 +33,10 @@ public interface Driveable {
 
     /**Sets whether the right side motors of the robot are reevrsed or not.*/
     void invertRightSideMotors(boolean inverted);
+
+    /**Resets the robots's encoders.*/
+    void resetEncoders();
+
+    /**Sets the functioning of the robot's when they are being applied a motor power of 0..*/
+    void setZeroPowerBehavior(Motor.ZeroPowerBehavior zeroPowerBehavior);
 }

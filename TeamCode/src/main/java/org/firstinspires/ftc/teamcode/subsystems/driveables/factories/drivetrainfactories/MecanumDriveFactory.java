@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems.driveables.factories.drivetrai
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -15,7 +16,9 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.mecanum.MecanumDrive;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**Factory to call to create new mecanum drivetrain instances easily with two methods, one for drivetrain creation and one for the drivetrain
  * command creation.*/
@@ -30,6 +33,8 @@ public class MecanumDriveFactory implements DrivetrainFactory {
 
     /*Constructs a new instance of this class, but only for the one instance that can be accessed statically.*/
     private MecanumDriveFactory() {}
+
+    private static final Map<GamepadKeys.Button, Runnable> buttonsToRunnable = new LinkedHashMap<>();
 
     /**@return The instance of this class that be used to access the instance-specific drivetrain and drive command creation methods.*/
     public static MecanumDriveFactory getInstance() {
@@ -53,7 +58,7 @@ public class MecanumDriveFactory implements DrivetrainFactory {
                         new Motor(hardwareMap, FactoryConstants.MotorConfig.FRONT_RIGHT_MECANUM_MOTOR),
                         new Motor(hardwareMap, FactoryConstants.MotorConfig.BACK_LEFT_MECANUM_MOTOR),
                         new Motor(hardwareMap, FactoryConstants.MotorConfig.BACK_RIGHT_MECANUM_MOTOR))),
-                FactoryConstants.SensorConfig.DASHBOARD_TELEMETRY, imu);
+                FactoryConstants.SensorConfig.DASHBOARD_TELEMETRY, imu, buttonsToRunnable);
     }
 
     @Override
@@ -64,5 +69,9 @@ public class MecanumDriveFactory implements DrivetrainFactory {
         } else {
             return new MecanumCommand(driverVector, gamepadEx, drive);
         }
+    }
+
+    public static void addGameActions(Map<GamepadKeys.Button, Runnable> buttonsToRunnable) {
+        MecanumDriveFactory.buttonsToRunnable.putAll(buttonsToRunnable);
     }
 }

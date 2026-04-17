@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables.swerve;
 
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.deadZoneTolerance;
+
 import com.arcrobotics.ftclib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Driveable;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 
@@ -36,7 +37,7 @@ public abstract class Swerve extends SubsystemBase implements Driveable {
     public void drive() {
         Vector driverVector = driverVectorSupplier.get();
         int currentRobotOrientation = currentRobotOrientationSupplier.get();
-        boolean rotating = driverVector.getZ() >= Constants.deadZoneTolerance;
+        boolean rotating = driverVector.getZ() >= deadZoneTolerance;
         calculateSwerveModuleHeadingsAndDrive(rotating, true, driverVector, currentRobotOrientation);
     }
 

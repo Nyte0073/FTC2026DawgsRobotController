@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.pid;
 
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.telemetry;
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.distancePerPulseInches;
 
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants;
 
 import java.util.LinkedList;
 
@@ -39,7 +39,7 @@ public class LinearPIDModule implements PIDModule {
     public LinearPIDModule(LinkedList<Motor> motors, double kP, double kS, double kD) {
         this.motors.addAll(motors);
         for(Motor m : this.motors) {
-            m.setDistancePerPulse(Constants.MecanumConstants.distancePerPulseInches);
+            m.setDistancePerPulse(distancePerPulseInches);
         }
         pidController = new PIDController(kP, kS, kD);
         pidController.reset();
@@ -52,9 +52,10 @@ public class LinearPIDModule implements PIDModule {
 
     @Override
     public void update() {
-        telemetry.addData("Distance: ", getDistance());
-        telemetry.addData("PID Error between target position and current position: ", pidController.getPositionError());
-        telemetry.addData("Target: ", getTarget());
+        FactoryConstants.SensorConfig.DASHBOARD_TELEMETRY.addData("Distance: ", getDistance());
+        FactoryConstants.SensorConfig.DASHBOARD_TELEMETRY.addData("PID Error between target position and current position: ", pidController.getPositionError());
+        FactoryConstants.SensorConfig.DASHBOARD_TELEMETRY.addData("Target: ", getTarget());
+        FactoryConstants.SensorConfig.DASHBOARD_TELEMETRY.update();
     }
 
     @Override
@@ -84,7 +85,7 @@ public class LinearPIDModule implements PIDModule {
 
     @Override
     public Telemetry getTelemetry() {
-        return telemetry;
+        return FactoryConstants.SensorConfig.DASHBOARD_TELEMETRY;
     }
 
     @Override

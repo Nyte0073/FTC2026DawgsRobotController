@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables.swerve;
 
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.SwerveConstants.swerveKd;
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.SwerveConstants.swerveKi;
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.SwerveConstants.swerveKp;
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.swerveDistancePerPulse;
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.swerveKd;
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.swerveKi;
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.swerveKp;
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.swerveTolerance;
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.tolerance;
 
 import android.util.Log;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -11,7 +14,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.pid.AngularPIDModule;
 import org.firstinspires.ftc.teamcode.pid.PIDModule;
 import org.firstinspires.ftc.teamcode.subsystem_math.SwerveMath;
-import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 
 import java.util.LinkedList;
@@ -43,7 +45,7 @@ public class SwerveModule {
     public SwerveModule(Motor rotatingMotor, Motor drivingMotor, Vector positionVector, Telemetry telemetry) {
         this.rotatingMotor = rotatingMotor;
         this.drivingMotor = drivingMotor;
-        this.rotatingMotor.setDistancePerPulse(Constants.SwerveConstants.swerveDistancePerPulse);
+        this.rotatingMotor.setDistancePerPulse(swerveDistancePerPulse);
         this.positionVector = positionVector.deepCopy();
         this.rotatingMotor.setInverted(true);
         this.rotatingMotor.encoder.setDirection(Motor.Direction.REVERSE);
@@ -72,14 +74,14 @@ public class SwerveModule {
     }
 
     public void applyTransAndRotVectorToMotor(Vector translatedAndRotatedVector, int currentRobotOrientation) {
-        int angle = translatedAndRotatedVector.getMagnitude() <= Constants.SwerveConstants.swerveTolerance ? 0 : (int) (Math.toDegrees(Math.atan2(
+        int angle = translatedAndRotatedVector.getMagnitude() <= swerveTolerance ? 0 : (int) (Math.toDegrees(Math.atan2(
                 translatedAndRotatedVector.getY(), translatedAndRotatedVector.getX()
         ))) - 90;
         double currentMotorPosition = getCurrentModuleHeading();
         double absoluteHeading = currentMotorPosition + currentRobotOrientation;
         double normalizedHeading = SwerveMath.normalizeHeading(angle, absoluteHeading);
         finalNormalizedHeading = (int) SwerveMath.reverseHeading(normalizedHeading, absoluteHeading, currentMotorPosition + normalizedHeading);
-        if(Math.abs(finalNormalizedHeading - previousNormalizedHeading) > Constants.tolerance) {
+        if(Math.abs(finalNormalizedHeading - previousNormalizedHeading) > tolerance) {
             previousNormalizedHeading = finalNormalizedHeading;
             pidModule.setTarget(finalNormalizedHeading);
             // controller.setSetPoint(finalNormalizedHeading);

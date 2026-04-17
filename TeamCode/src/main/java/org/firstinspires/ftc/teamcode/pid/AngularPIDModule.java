@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.pid;
 
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.distancePerPulseAngle;
+
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 
 import java.util.LinkedList;
 
@@ -36,7 +37,7 @@ public class AngularPIDModule implements PIDModule {
         this.telemetry = telemetry;
         this.motors.addAll(motors);
         for(Motor m : this.motors) {
-            m.setDistancePerPulse(Constants.MecanumConstants.distancePerPulseAngle);
+            m.setDistancePerPulse(distancePerPulseAngle);
         }
         pidController = new PIDController(kP, kS, kD);
         pidController.reset();

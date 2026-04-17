@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystem_math;
 
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.Constants.deadZoneTolerance;
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.deadZoneTolerance;
 
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
 

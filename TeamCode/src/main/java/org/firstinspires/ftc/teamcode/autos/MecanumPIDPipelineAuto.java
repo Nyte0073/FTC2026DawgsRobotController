@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import java.util.List;
 
+import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.drivetrainfactories.MecanumDriveFactory;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.pidfactories.DriveablePIDFactory;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.pidfactories.PathSegment;
@@ -24,9 +25,10 @@ public class MecanumPIDPipelineAuto extends CommandOpMode {
         command.addRequirements(drive);
         drive.setDefaultCommand(command);
         drive.resetEncoders();
-        drive.invertRightSideEncoders(true);
-        drive.invertLeftSideMotors(true);
-        drive.invertRightSideMotors(true);
+        drive.invertRightSideEncoders(FactoryConstants.MotorConfig.invertRightSideEncoders);
+        drive.invertLeftSideMotors(FactoryConstants.MotorConfig.invertLeftSideEncoders);
+        drive.invertRightSideMotors(FactoryConstants.MotorConfig.invertRightSideMotors);
+        drive.invertLeftSideMotors(FactoryConstants.MotorConfig.invertLeftSideMotors);
         drive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         schedule(DriveablePIDFactory.getInstance().buildCommandGroup(drive, List.of(
                 new PathSegment(-90, 40, true))));

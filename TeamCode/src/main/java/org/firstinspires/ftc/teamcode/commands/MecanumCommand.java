@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.buttons;
+
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.subsystems.driveables.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
@@ -43,7 +44,7 @@ public final class MecanumCommand extends CommandBase {
         driverVector.setY(-gamepadEx.getLeftY());
         driverVector.setZ(-gamepadEx.getRightX());
         mecanumDrive.drive();
-        for (GamepadKeys.Button b : Constants.buttons) {
+        for (GamepadKeys.Button b : buttons) {
             if (buttonPredicate.test(b)) {
                 mecanumDrive.switchActions(b);
             }
