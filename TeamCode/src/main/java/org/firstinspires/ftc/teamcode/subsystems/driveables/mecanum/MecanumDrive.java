@@ -6,13 +6,12 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
+import org.firstinspires.ftc.teamcode.subsystems.driveables.externalhardware.externalhardwareactions.HardwareAction;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public final class MecanumDrive extends Mecanum {
@@ -21,14 +20,14 @@ public final class MecanumDrive extends Mecanum {
     private final com.arcrobotics.ftclib.drivebase.MecanumDrive mecanumDrive;
     private final IMU imu;
     private final List<Motor> motors = new LinkedList<>();
-    private final Map<GamepadKeys.Button, Runnable> buttonsToRunnable = new LinkedHashMap<>();
+    public final Map<GamepadKeys.Button, HardwareAction> buttonsToRunnable = new LinkedHashMap<>();
 
-    public MecanumDrive(Supplier<Vector> driverVectorSupplier, Supplier<Double> currentRobotOrientationSupplier, LinkedList<Motor> motors, Telemetry telemetry, IMU imu, Map<GamepadKeys.Button, Runnable> buttonsToRunnables) {
+    public MecanumDrive(Supplier<Vector> driverVectorSupplier, Supplier<Double> currentRobotOrientationSupplier, LinkedList<Motor> motors, Telemetry telemetry, IMU imu, Map<GamepadKeys.Button, HardwareAction> buttonsToRunnables) {
         super(driverVectorSupplier, currentRobotOrientationSupplier, telemetry);
         mecanumDrive = new com.arcrobotics.ftclib.drivebase.MecanumDrive(motors.get(0), motors.get(1), motors.get(2), motors.get(3));
         this.motors.addAll(motors);
         this.imu = imu;
-        buttonsToRunnable.putAll(buttonsToRunnables);
+        this.buttonsToRunnable.putAll(buttonsToRunnables);
     }
 
     @Override
@@ -46,11 +45,6 @@ public final class MecanumDrive extends Mecanum {
         double y = driverVector.getY();
         double z = driverVector.getZ();
         mecanumDrive.driveFieldCentric(x, y, z, originalRobotAngle, true);
-    }
-
-    @Override
-    public void switchActions(GamepadKeys.Button button) {
-        Objects.requireNonNull(buttonsToRunnable.get(button)).run();
     }
 
     @Override
@@ -109,7 +103,7 @@ public final class MecanumDrive extends Mecanum {
 
     public void resetEncoders() {
         for(Motor m : motors) {
-            m.resetEncoder();
+            m.stopAndResetEncoder();
         }
     }
 

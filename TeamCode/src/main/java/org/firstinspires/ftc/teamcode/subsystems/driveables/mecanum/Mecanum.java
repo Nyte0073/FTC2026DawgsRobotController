@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.subsystems.driveables.mecanum;
 import android.util.Log;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -71,9 +70,4 @@ public abstract class Mecanum extends SubsystemBase implements Driveable {
     /**Calculates the motor powers for the mecanum drive wheels and sets all their powers. This is the main method to make the robot
      * drive around.*/
     public abstract void calculateMotorPowers(double originalRobotAngle, Vector driverVector);
-
-    /**Depending on which button was pressed, the mecanum performs a specific action that is other than focusing on driving.
-     * This can range from activating other hardware (claws, elevators, etc.) on the robot to resetting the robot's gyroscope system when oriented
-     * a certain way.*/
-    public abstract void switchActions(GamepadKeys.Button button);
 }

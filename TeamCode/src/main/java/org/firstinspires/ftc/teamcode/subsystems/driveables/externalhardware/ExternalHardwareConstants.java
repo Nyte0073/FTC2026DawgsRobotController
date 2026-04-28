@@ -1,17 +1,20 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables.externalhardware;
 
-public class ExternalHardwareConstants {
+public final class ExternalHardwareConstants {
 
     public static final class ServoImplConstants {
 
-        public static final double LEFT_EXTENSION_SERVO_MINIMUM = 25.0,
-        RIGHT_EXTENSION_SERVO_MINIMUM = 40.0, LEFT_EXTENSION_SERVO_MAXIMUM = 90.0,
-        RIGHT_EXTENSION_SERVO_MAXIMUM = 110.0;
+        public static final double LEFT_EXTENSION_SERVO_MINIMUM = 0.2 / 18.0,
+        RIGHT_EXTENSION_SERVO_MINIMUM = 1.0 / 18.0, LEFT_EXTENSION_SERVO_MAXIMUM = 4.0 / 18.0,
+        RIGHT_EXTENSION_SERVO_MAXIMUM = 4.0 / 18.0, RIGHT_CLAW_MAX_ROTATION = -75, CLAW_MIN_ROTATION = -180,
+        LEFT_CLAW_MAX_ROTATION = -100, CLAW_MAXIMUM = 180, CLAW_MINIMUM = -180;
 
         public enum ServoType {
-            LEFT_EXTENSION("servo", true, 25.0, 90.0),
+            LEFT_EXTENSION("servo", true, LEFT_EXTENSION_SERVO_MINIMUM, LEFT_EXTENSION_SERVO_MAXIMUM),
 
-            RIGHT_EXTENSION("servo2", false, 40.0, 110.0);
+            RIGHT_EXTENSION("servo2", false, RIGHT_EXTENSION_SERVO_MINIMUM, RIGHT_EXTENSION_SERVO_MAXIMUM),
+            LEFT_CLAW("servo3", false, CLAW_MINIMUM, CLAW_MAXIMUM),
+            RIGHT_CLAW("servo4", false, CLAW_MINIMUM, CLAW_MAXIMUM);
 
             public final String servoName;
             public final boolean inverted;

@@ -7,12 +7,13 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.sun.tools.javac.util.List;
+import java.util.List;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.commands.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Driveable;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
+import org.firstinspires.ftc.teamcode.subsystems.driveables.externalhardware.externalhardwareactions.HardwareAction;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.mecanum.MecanumDrive;
 
@@ -22,7 +23,7 @@ import java.util.Map;
 
 /**Factory to call to create new mecanum drivetrain instances easily with two methods, one for drivetrain creation and one for the drivetrain
  * command creation.*/
-public class MecanumDriveFactory implements DrivetrainFactory {
+public final class MecanumDriveFactory implements DrivetrainFactory {
 
     /*The instance of this class that can be accessed to statically to get access to the instance-specific drivetrain and drive command
     * creation methods.*/
@@ -34,7 +35,7 @@ public class MecanumDriveFactory implements DrivetrainFactory {
     /*Constructs a new instance of this class, but only for the one instance that can be accessed statically.*/
     private MecanumDriveFactory() {}
 
-    private static final Map<GamepadKeys.Button, Runnable> buttonsToRunnable = new LinkedHashMap<>();
+    private static final Map<GamepadKeys.Button, HardwareAction> buttonsToRunnable = new LinkedHashMap<>();
 
     /**@return The instance of this class that be used to access the instance-specific drivetrain and drive command creation methods.*/
     public static MecanumDriveFactory getInstance() {
@@ -71,7 +72,12 @@ public class MecanumDriveFactory implements DrivetrainFactory {
         }
     }
 
-    public static void addGameActions(Map<GamepadKeys.Button, Runnable> buttonsToRunnable) {
+    public static void addGameActions(Map<GamepadKeys.Button, HardwareAction> buttonsToRunnable) {
+        MecanumDriveFactory.buttonsToRunnable.clear();
         MecanumDriveFactory.buttonsToRunnable.putAll(buttonsToRunnable);
+    }
+
+    public static Map<GamepadKeys.Button, HardwareAction> getGameActions() {
+        return buttonsToRunnable;
     }
 }

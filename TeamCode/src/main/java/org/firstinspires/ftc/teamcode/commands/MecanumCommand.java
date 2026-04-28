@@ -1,15 +1,11 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import static org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants.TeleopAndAutoConstants.buttons;
-
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.FactoryConstants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
-import java.util.function.Predicate;
 
 /**Class for commanding a Mecanum Drive subsystem to drive around using four mecanum wheels.
  * Make sure to set this class as a default command for the subsystem you are using it with so
@@ -26,7 +22,6 @@ public final class MecanumCommand extends CommandBase {
      * robot.*/
     private final MecanumDrive mecanumDrive;
 
-    private final Predicate<GamepadKeys.Button> buttonPredicate;
 
     /**Constructs a new {@code MecanumCommand()} with initialized {@code driverVector} (Vector),
      * {@code gamepadEx} (GamepadEx) and {@code mecanumDrive} (MecanumDrive) variables.*/
@@ -34,21 +29,14 @@ public final class MecanumCommand extends CommandBase {
         this.driverVector = driverVector;
         this.gamepadEx = gamepadEx;
         this.mecanumDrive = mecanumDrive;
-        buttonPredicate = this.gamepadEx::wasJustPressed;
     }
 
     @Override
     public void execute() {
-        gamepadEx.readButtons();
         driverVector.setX(-gamepadEx.getLeftX());
         driverVector.setY(-gamepadEx.getLeftY());
         driverVector.setZ(-gamepadEx.getRightX());
         mecanumDrive.drive();
-        for (GamepadKeys.Button b : buttons) {
-            if (buttonPredicate.test(b)) {
-                mecanumDrive.switchActions(b);
-            }
-        }
     }
 
     /**Class for controlling a Mecanum drivetrain by the vector in the {@link FactoryConstants} class
