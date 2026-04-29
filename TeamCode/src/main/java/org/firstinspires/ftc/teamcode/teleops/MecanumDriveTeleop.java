@@ -32,24 +32,31 @@ public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
         drive.invertRightSideEncoders(true);
 
          ServoImpl leftExtension = TeleopExternalHardwareFactory.createServoImpl(hardwareMap,
-                ExternalHardwareConstants.ServoImplConstants.ServoType.LEFT_EXTENSION);
+                ExternalHardwareConstants.ServoImplConstants.ServoType.LEFT_EXTENSION),
 
-         ServoImpl rightExtension = TeleopExternalHardwareFactory.createServoImpl(hardwareMap,
-                ExternalHardwareConstants.ServoImplConstants.ServoType.RIGHT_EXTENSION);
+                 rightExtension = TeleopExternalHardwareFactory.createServoImpl(hardwareMap,
+                ExternalHardwareConstants.ServoImplConstants.ServoType.RIGHT_EXTENSION),
 
-         ServoImpl leftClaw = TeleopExternalHardwareFactory.createServoImpl(hardwareMap,
-                 ExternalHardwareConstants.ServoImplConstants.ServoType.LEFT_CLAW);
+                 leftClaw = TeleopExternalHardwareFactory.createServoImpl(hardwareMap,
+                 ExternalHardwareConstants.ServoImplConstants.ServoType.LEFT_CLAW),
 
-         ServoImpl rightClaw = TeleopExternalHardwareFactory.createServoImpl(hardwareMap,
-                 ExternalHardwareConstants.ServoImplConstants.ServoType.RIGHT_CLAW);
+                 rightClaw = TeleopExternalHardwareFactory.createServoImpl(hardwareMap,
+                 ExternalHardwareConstants.ServoImplConstants.ServoType.RIGHT_CLAW),
 
-        MecanumDriveFactory.addGameActions(Map.of(
+        extensionRotater = TeleopExternalHardwareFactory.createServoImpl(hardwareMap,
+                ExternalHardwareConstants.ServoImplConstants.ServoType.CLAW_SYSTEM_ROTATER);
+
+        MecanumDriveFactory.getInstance().addGameActions(Map.of(
                 GamepadKeys.Button.B, new ServoAction(leftExtension, rightExtension, ServoAction.DoubleActionType.GO_TO_MAX_EXTENSION),
                 GamepadKeys.Button.A, new ServoAction(leftExtension, rightExtension, ServoAction.DoubleActionType.GO_TO_MIN_EXTENSION),
                 GamepadKeys.Button.X, new ServoAction(leftClaw, rightClaw, ServoAction.DoubleActionType.CLAW_GRAB),
                 GamepadKeys.Button.Y, new ServoAction(leftClaw, rightClaw, ServoAction.DoubleActionType.CLAW_RELEASE),
-                GamepadKeys.Button.DPAD_UP, new IMUAction(drive.getIMU(), IMUAction.IMUActionType.RESET_YAW)
+                GamepadKeys.Button.DPAD_RIGHT, new IMUAction(drive.getIMU(), IMUAction.IMUActionType.RESET_YAW),
+                GamepadKeys.Button.DPAD_DOWN, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_MIN_ROTATION),
+                GamepadKeys.Button.DPAD_LEFT, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_ZERO_ROTATION),
+                GamepadKeys.Button.DPAD_UP, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_MAX_ROTATION)
         ));
+
 
         telemetryMap.putAll(Map.of(
                "Left Extension Position", leftExtension.servo::getPosition,
@@ -79,7 +86,7 @@ public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
 
     @Override
     public void initializeGameActions() {
-        for(Map.Entry<GamepadKeys.Button, HardwareAction> entry : MecanumDriveFactory.getGameActions().entrySet()) {
+        for(Map.Entry<GamepadKeys.Button, HardwareAction> entry : MecanumDriveFactory.getInstance().getGameActions().entrySet()) {
             gamepadEx.getGamepadButton(entry.getKey()).whenPressed(() -> entry.getValue().run());
         }
     }

@@ -70,4 +70,5 @@ public abstract class Mecanum extends SubsystemBase implements Driveable {
     /**Calculates the motor powers for the mecanum drive wheels and sets all their powers. This is the main method to make the robot
      * drive around.*/
     public abstract void calculateMotorPowers(double originalRobotAngle, Vector driverVector);
+
 }

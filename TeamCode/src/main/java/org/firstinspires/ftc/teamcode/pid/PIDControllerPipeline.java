@@ -50,10 +50,17 @@ public class PIDControllerPipeline {
     /**Class to make robot rotate a certain amount of inches clockwise or counterclockwise depending on the sign of the angle
      * inputted in. This class uses PID to adjust the angular speed of the robot depending on how far away it is from its target angle.*/
     public static final class TurnToCommand extends CommandBase {
-
+        /*Vector used to apply motor powers to the robot.*/
         private final Vector driverVector;
+
+        /*Module used to scale motor powers based on the error between the current target orientation.*/
         private final IMUAngularModule module;
+
+        /*Reference to the motor objects used in the command to reset the encoders of the motors after the command
+        * is done.*/
         private final LinkedList<Motor> motors = new LinkedList<>();
+
+        /*IMU reference used to reset the yaw of the gyroscope system that returns the current orientation of the robot.*/
         private final IMU imu;
 
         public TurnToCommand(Vector driverVector, IMUAngularModule module, LinkedList<Motor> motors, IMU imu) {
@@ -88,10 +95,22 @@ public class PIDControllerPipeline {
 
     public static final class MoveCommand extends CommandBase {
 
+        /*Vector that controls setting the power of the drive motors of the robot.*/
         private final Vector driverVector;
+
+        /*PID controlled module with built in PID system to control the output of the robot's drive motor powers depending
+        * on the difference between the target and current position (usually in inches).*/
         private final LinearPIDModule module;
+
+        /*Reference to the drive motors of the robot, used in this code to gain access to the function that resets their encoders after
+        * every use of an instance of this Command base.*/
         private final LinkedList<Motor> motors = new LinkedList<>();
+
+        /*Reference to the gyroscope system of the robot, used in this command base to gain access to the option to
+        * reset the yaw of the system so that the robot's current position gets reset to zero.*/
         private final IMU imu;
+
+        /*Boolean state of whether the robot will strafe a certain distance or not.*/
         private final boolean strafe;
 
         public MoveCommand(Vector driverVector, LinearPIDModule module, LinkedList<Motor> motors, IMU imu, boolean strafe) {

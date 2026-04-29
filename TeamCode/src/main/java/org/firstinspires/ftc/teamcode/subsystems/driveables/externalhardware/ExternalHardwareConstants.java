@@ -14,7 +14,8 @@ public final class ExternalHardwareConstants {
 
             RIGHT_EXTENSION("servo2", false, RIGHT_EXTENSION_SERVO_MINIMUM, RIGHT_EXTENSION_SERVO_MAXIMUM),
             LEFT_CLAW("servo3", false, CLAW_MINIMUM, CLAW_MAXIMUM),
-            RIGHT_CLAW("servo4", false, CLAW_MINIMUM, CLAW_MAXIMUM);
+            RIGHT_CLAW("servo4", false, CLAW_MINIMUM, CLAW_MAXIMUM),
+            CLAW_SYSTEM_ROTATER("servo5", false, CLAW_MINIMUM, CLAW_MAXIMUM);
 
             public final String servoName;
             public final boolean inverted;

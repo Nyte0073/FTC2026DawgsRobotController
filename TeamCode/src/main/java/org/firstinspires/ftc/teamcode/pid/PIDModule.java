@@ -32,5 +32,7 @@ public interface PIDModule {
     /**@return The telemetry object used to send information from the robot to the FTC Dashboard.*/
     Telemetry getTelemetry();
 
+    /**@return The PID controller that is going to be used to calculate motor output for different types of motorized hardware around the
+     * robot.*/
     PIDController getController();
 }

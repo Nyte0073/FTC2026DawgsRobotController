@@ -4,9 +4,13 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import java.util.function.Consumer;
 
+/**Represents an action that can be done to the IMU system of the robot.*/
 public class IMUAction implements HardwareAction {
 
+    /*Reference to the IMU system the specifically configured actions will perform their functions on.*/
     private final IMU imu;
+
+    /*The specific action to be executed on the IMU system.*/
     private final IMUActionType actionType;
 
     public IMUAction(IMU imu, IMUActionType actionType) {

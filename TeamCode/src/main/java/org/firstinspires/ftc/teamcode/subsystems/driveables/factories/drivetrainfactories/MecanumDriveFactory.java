@@ -35,7 +35,7 @@ public final class MecanumDriveFactory implements DrivetrainFactory {
     /*Constructs a new instance of this class, but only for the one instance that can be accessed statically.*/
     private MecanumDriveFactory() {}
 
-    private static final Map<GamepadKeys.Button, HardwareAction> buttonsToRunnable = new LinkedHashMap<>();
+    private final Map<GamepadKeys.Button, HardwareAction> buttonsToRunnable = new LinkedHashMap<>();
 
     /**@return The instance of this class that be used to access the instance-specific drivetrain and drive command creation methods.*/
     public static MecanumDriveFactory getInstance() {
@@ -72,12 +72,14 @@ public final class MecanumDriveFactory implements DrivetrainFactory {
         }
     }
 
-    public static void addGameActions(Map<GamepadKeys.Button, HardwareAction> buttonsToRunnable) {
-        MecanumDriveFactory.buttonsToRunnable.clear();
-        MecanumDriveFactory.buttonsToRunnable.putAll(buttonsToRunnable);
+    @Override
+    public void addGameActions(Map<GamepadKeys.Button, HardwareAction> buttonsToRunnable) {
+        this.buttonsToRunnable.clear();
+        this.buttonsToRunnable.putAll(buttonsToRunnable);
     }
 
-    public static Map<GamepadKeys.Button, HardwareAction> getGameActions() {
+    @Override
+    public Map<GamepadKeys.Button, HardwareAction> getGameActions() {
         return buttonsToRunnable;
     }
 }
