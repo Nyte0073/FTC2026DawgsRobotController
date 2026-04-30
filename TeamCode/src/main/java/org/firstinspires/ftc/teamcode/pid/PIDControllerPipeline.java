@@ -127,7 +127,7 @@ public class PIDControllerPipeline {
                 /*todo back left encoder needs to be reversed,
                 *  front right encoder needs to be reversed as well.*/
                 for(Motor m : motors) {
-                    if(m == motors.get(0) || m == motors.get(2)) {
+                    if(m == motors.get(2) || m == motors.get(3)) {
                         m.encoder.setDirection(Motor.Direction.REVERSE);
                     }
                 }

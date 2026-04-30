@@ -2,10 +2,13 @@ package org.firstinspires.ftc.teamcode.teleops;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.externalhardware.ExternalHardwareConstants;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.externalhardware.ServoImpl;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.externalhardware.TeleopExternalHardwareFactory;
@@ -30,6 +33,7 @@ public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
         MecanumDrive drive = (MecanumDrive) MecanumDriveFactory.getInstance().createDrivetrain(hardwareMap);
         CommandBase command = MecanumDriveFactory.getInstance().createDrivetrainCommand(drive, gamepadEx, false);
         drive.invertRightSideEncoders(true);
+        drive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
          ServoImpl leftExtension = TeleopExternalHardwareFactory.createServoImpl(hardwareMap,
                 ExternalHardwareConstants.ServoImplConstants.ServoType.LEFT_EXTENSION),
@@ -57,6 +61,9 @@ public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
                 GamepadKeys.Button.DPAD_UP, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_MAX_ROTATION)
         ));
 
+        MecanumDriveFactory.getInstance().addTriggerGameActions(gamepadEx, Map.of(
+                GamepadKeys.Trigger.LEFT_TRIGGER, new ServoAction(rightExtension, ServoAction.SingleActionType.ENABLE_PIECE_PICKING)
+        ));
 
         telemetryMap.putAll(Map.of(
                "Left Extension Position", leftExtension.servo::getPosition,
@@ -64,7 +71,9 @@ public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
                "Front Left Encoder Distance", () -> drive.getMotors().get(0).encoder.getDistance(),
                "Front Right Encoder Distance", () -> drive.getMotors().get(1).encoder.getDistance(),
                "Back Left Encoder Distance", () -> drive.getMotors().get(2).encoder.getDistance(),
-               "Back Right Encoder Distance", () -> drive.getMotors().get(3).encoder.getDistance()
+               "Back Right Encoder Distance", () -> drive.getMotors().get(3).encoder.getDistance(),
+                "IMU current orientation", () -> drive.getIMU().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES),
+                "Picking Piece Enabled", () -> extensionRotater.toggle
         ));
 
         initializeGameActions();
@@ -88,6 +97,9 @@ public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
     public void initializeGameActions() {
         for(Map.Entry<GamepadKeys.Button, HardwareAction> entry : MecanumDriveFactory.getInstance().getGameActions().entrySet()) {
             gamepadEx.getGamepadButton(entry.getKey()).whenPressed(() -> entry.getValue().run());
+        }
+        for(Map.Entry<Trigger, HardwareAction> entry : MecanumDriveFactory.getInstance().getTriggerActions().entrySet()) {
+            entry.getKey().whenActive(() -> entry.getValue().run());
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables.factories.drivetrainfactories;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -36,6 +37,8 @@ public final class MecanumDriveFactory implements DrivetrainFactory {
     private MecanumDriveFactory() {}
 
     private final Map<GamepadKeys.Button, HardwareAction> buttonsToRunnable = new LinkedHashMap<>();
+
+    private final Map<Trigger, HardwareAction> triggerToRunnable = new LinkedHashMap<>();
 
     /**@return The instance of this class that be used to access the instance-specific drivetrain and drive command creation methods.*/
     public static MecanumDriveFactory getInstance() {
@@ -78,8 +81,19 @@ public final class MecanumDriveFactory implements DrivetrainFactory {
         this.buttonsToRunnable.putAll(buttonsToRunnable);
     }
 
+    public void addTriggerGameActions(GamepadEx gamepadEx, Map<GamepadKeys.Trigger, HardwareAction> triggerToRunnable) {
+        this.triggerToRunnable.clear();
+        for(Map.Entry<GamepadKeys.Trigger, HardwareAction> entry : triggerToRunnable.entrySet()) {
+            this.triggerToRunnable.put(new Trigger(() -> gamepadEx.getTrigger(entry.getKey()) > 0.5), entry.getValue());
+        }
+    }
+
     @Override
     public Map<GamepadKeys.Button, HardwareAction> getGameActions() {
         return buttonsToRunnable;
+    }
+
+    public Map<Trigger, HardwareAction> getTriggerActions() {
+        return triggerToRunnable;
     }
 }

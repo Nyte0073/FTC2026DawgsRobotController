@@ -18,9 +18,6 @@ public class ServoAction implements HardwareAction {
     /*Action to be called upon two servos.*/
     private final BiConsumer<ServoImpl, ServoImpl> servoBiConsumer;
 
-    /*True of false state of whether the extension on the robot is currently fully extended or not.*/
-    private static boolean extensionToggle = false;
-
     public ServoAction(ServoImpl servo, SingleActionType actionType) {
         servoImpl = servo;
         servoConsumer = actionType.consumer;
@@ -54,7 +51,8 @@ public class ServoAction implements HardwareAction {
         GO_TO_MIN_LEFT_EXTENSION(s -> s.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.LEFT_EXTENSION_SERVO_MINIMUM)),
         GO_TO_MAX_ROTATION(s -> s.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.CLAW_MAXIMUM)),
         GO_TO_MIN_ROTATION(s -> s.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.CLAW_MINIMUM)),
-        GO_TO_ZERO_ROTATION(s -> s.servo.turnToAngle(0));
+        GO_TO_ZERO_ROTATION(s -> s.servo.turnToAngle(0)),
+        ENABLE_PIECE_PICKING(s -> s.pickingPieceToggle = !s.pickingPieceToggle);
 
         public final Consumer<ServoImpl> consumer;
 
@@ -73,8 +71,13 @@ public class ServoAction implements HardwareAction {
             rightServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.RIGHT_EXTENSION_SERVO_MINIMUM);
         }),
         CLAW_GRAB((leftClaw, rightClaw) -> {
-            leftClaw.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.LEFT_CLAW_MAX_ROTATION);
-            rightClaw.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.RIGHT_CLAW_MAX_ROTATION);
+            if(leftClaw.pickingPieceToggle) {
+                leftClaw.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.LEFT_CLAW_MAX_FOAM_PIECE_ROTATION);
+                rightClaw.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.RIGHT_CLAW_MAX_FOAM_PIECE_ROTATION);
+            } else {
+                leftClaw.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.LEFT_CLAW_MAX_ROTATION);
+                rightClaw.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.RIGHT_CLAW_MAX_ROTATION);
+            }
         }),
         CLAW_RELEASE((leftClaw, rightClaw) -> {
             leftClaw.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.CLAW_MIN_ROTATION);
@@ -82,8 +85,8 @@ public class ServoAction implements HardwareAction {
         }),
 
         CLAW_GRAB_RELEASE((leftServoImpl, rightServoImpl) -> {
-            extensionToggle = !extensionToggle;
-            if(!extensionToggle) {
+            leftServoImpl.toggle = !leftServoImpl.toggle;
+            if(!leftServoImpl.toggle) {
                 leftServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.LEFT_EXTENSION_SERVO_MINIMUM);
                 rightServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.RIGHT_EXTENSION_SERVO_MINIMUM);
             } else {
@@ -98,4 +101,5 @@ public class ServoAction implements HardwareAction {
             this.biConsumer = biConsumer;
         }
     }
+
 }

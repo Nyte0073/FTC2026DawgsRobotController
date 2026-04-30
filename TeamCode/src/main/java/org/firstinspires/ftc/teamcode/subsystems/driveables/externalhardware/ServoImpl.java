@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * for the use of a fully initialized servo.*/
 public final class ServoImpl {
     public final ServoEx servo;
+    public boolean toggle = false, pickingPieceToggle = false;
     public ServoImpl(HardwareMap hardwareMap, ExternalHardwareConstants.ServoImplConstants.ServoType servoType) {
        servo = new SimpleServo(hardwareMap, servoType.servoName, servoType.min, servoType.max);
        servo.setInverted(servoType.inverted);
