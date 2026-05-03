@@ -63,12 +63,18 @@ public class ServoAction implements HardwareAction {
 
     public enum DoubleActionType {
         GO_TO_MAX_EXTENSION(((leftServoImpl, rightServoImpl) -> {
-            leftServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.LEFT_EXTENSION_SERVO_MAXIMUM);
-            rightServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.RIGHT_EXTENSION_SERVO_MAXIMUM);
+            /*todo turn angle 90, not set position.*/
+            leftServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.GROUND_MAX_POSITION);
+            rightServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.GROUND_MAX_POSITION);
         })),
         GO_TO_MIN_EXTENSION((leftServoImpl, rightServoImpl) -> {
-            leftServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.LEFT_EXTENSION_SERVO_MINIMUM);
-            rightServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.RIGHT_EXTENSION_SERVO_MINIMUM);
+            /*todo turn to angle 0, not set position*/
+            leftServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.ABSOLUTE_MIN_POSITION);
+            rightServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.ABSOLUTE_MIN_POSITION);
+        }),
+        GO_TO_BASKET_POSITION((leftServoImpl, rightServoImpl) -> {
+            leftServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.BASKET_MAX_POSITION);
+            rightServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.BASKET_MAX_POSITION);
         }),
         CLAW_GRAB((leftClaw, rightClaw) -> {
             if(leftClaw.pickingPieceToggle) {

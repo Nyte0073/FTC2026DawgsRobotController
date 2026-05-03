@@ -4,8 +4,6 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 

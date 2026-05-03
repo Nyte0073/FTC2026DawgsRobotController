@@ -31,7 +31,7 @@ public interface Driveable {
     /**Sets whether the left side motors of the robot are reversed or not.*/
     void invertLeftSideMotors(boolean inverted);
 
-    /**Sets whether the right side motors of the robot are reevrsed or not.*/
+    /**Sets whether the right side motors of the robot are reversed or not.*/
     void invertRightSideMotors(boolean inverted);
 
     /**Resets the robots's encoders.*/

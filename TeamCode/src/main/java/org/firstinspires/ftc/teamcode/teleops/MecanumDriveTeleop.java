@@ -62,7 +62,8 @@ public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
         ));
 
         MecanumDriveFactory.getInstance().addTriggerGameActions(gamepadEx, Map.of(
-                GamepadKeys.Trigger.LEFT_TRIGGER, new ServoAction(rightExtension, ServoAction.SingleActionType.ENABLE_PIECE_PICKING)
+                GamepadKeys.Trigger.LEFT_TRIGGER, new ServoAction(rightExtension, ServoAction.SingleActionType.ENABLE_PIECE_PICKING),
+                GamepadKeys.Trigger.RIGHT_TRIGGER, new ServoAction(leftExtension, rightExtension, ServoAction.DoubleActionType.GO_TO_BASKET_POSITION)
         ));
 
         telemetryMap.putAll(Map.of(
