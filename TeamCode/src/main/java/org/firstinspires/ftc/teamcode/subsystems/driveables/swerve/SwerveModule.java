@@ -24,6 +24,7 @@ public class SwerveModule {
 
     /**Reference to the module's rotating motor.*/
     public final Motor rotatingMotor,
+
     /**Reference to the module's driving motor.*/
     drivingMotor;
 

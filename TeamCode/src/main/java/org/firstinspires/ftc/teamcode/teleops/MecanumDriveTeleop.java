@@ -50,20 +50,27 @@ public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
         extensionRotater = TeleopExternalHardwareFactory.createServoImpl(hardwareMap,
                 ExternalHardwareConstants.ServoImplConstants.ServoType.CLAW_SYSTEM_ROTATER);
 
+         /*Actions
+         *
+         * - Resetting the yaw, done
+         * - Opening/Closing the claw
+         * - Extending in and out, done
+         * - Going to three set positions,
+         * - Rotating the claw up/down
+          */
+
         MecanumDriveFactory.getInstance().addGameActions(Map.of(
-                GamepadKeys.Button.B, new ServoAction(leftExtension, rightExtension, ServoAction.DoubleActionType.GO_TO_MAX_EXTENSION),
-                GamepadKeys.Button.A, new ServoAction(leftExtension, rightExtension, ServoAction.DoubleActionType.GO_TO_MIN_EXTENSION),
-                GamepadKeys.Button.X, new ServoAction(leftClaw, rightClaw, ServoAction.DoubleActionType.CLAW_GRAB),
-                GamepadKeys.Button.Y, new ServoAction(leftClaw, rightClaw, ServoAction.DoubleActionType.CLAW_RELEASE),
-                GamepadKeys.Button.DPAD_RIGHT, new IMUAction(drive.getIMU(), IMUAction.IMUActionType.RESET_YAW),
-                GamepadKeys.Button.DPAD_DOWN, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_MIN_ROTATION),
-                GamepadKeys.Button.DPAD_LEFT, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_ZERO_ROTATION),
-                GamepadKeys.Button.DPAD_UP, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_MAX_ROTATION)
+            GamepadKeys.Button.DPAD_DOWN, new IMUAction(drive.getIMU(), IMUAction.IMUActionType.RESET_YAW),
+            GamepadKeys.Button.DPAD_LEFT, new ServoAction(leftExtension, rightExtension, ServoAction.DoubleActionType.GO_TO_MAX_EXTENSION),
+            GamepadKeys.Button.DPAD_RIGHT, new ServoAction(leftExtension, rightExtension, ServoAction.DoubleActionType.GO_TO_MIN_EXTENSION),
+            GamepadKeys.Button.DPAD_UP, new ServoAction(leftExtension, rightExtension, ServoAction.DoubleActionType.GO_TO_BASKET_POSITION),
+            GamepadKeys.Button.A, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_MAX_ROTATION),
+            GamepadKeys.Button.B, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_MIN_ROTATION),
+            GamepadKeys.Button.X, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_ZERO_ROTATION)
         ));
 
         MecanumDriveFactory.getInstance().addTriggerGameActions(gamepadEx, Map.of(
-                GamepadKeys.Trigger.LEFT_TRIGGER, new ServoAction(rightExtension, ServoAction.SingleActionType.ENABLE_PIECE_PICKING),
-                GamepadKeys.Trigger.RIGHT_TRIGGER, new ServoAction(leftExtension, rightExtension, ServoAction.DoubleActionType.GO_TO_BASKET_POSITION)
+            GamepadKeys.Trigger.LEFT_TRIGGER, new ServoAction(leftClaw, rightClaw, ServoAction.DoubleActionType.CLAW_GRAB_RELEASE)
         ));
 
         telemetryMap.putAll(Map.of(
