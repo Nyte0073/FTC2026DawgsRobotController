@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.subsystems.driveables.externalhardware.ext
 import org.firstinspires.ftc.teamcode.subsystems.driveables.externalhardware.externalhardwareactions.ServoAction;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.factories.drivetrainfactories.MecanumDriveFactory;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.mecanum.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.io.AndroidStudioServer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,11 +27,13 @@ import java.util.function.Supplier;
 public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
     private final Map<String, Supplier<Object>> telemetryMap = new LinkedHashMap<>();
     private GamepadEx gamepadEx;
+    private AndroidStudioServer server;
+    private MecanumDrive drive;
 
     @Override
     public void initialize() {
          gamepadEx = new GamepadEx(gamepad1);
-        MecanumDrive drive = (MecanumDrive) MecanumDriveFactory.getInstance().createDrivetrain(hardwareMap);
+         drive = (MecanumDrive) MecanumDriveFactory.getInstance().createDrivetrain(hardwareMap);
         CommandBase command = MecanumDriveFactory.getInstance().createDrivetrainCommand(drive, gamepadEx, false);
         drive.invertRightSideEncoders(true);
         drive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -55,7 +58,7 @@ public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
          * - Resetting the yaw, done
          * - Opening/Closing the claw
          * - Extending in and out, done
-         * - Going to three set positions,
+         * - Going to three set positions
          * - Rotating the claw up/down
           */
 
@@ -66,7 +69,8 @@ public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
             GamepadKeys.Button.DPAD_UP, new ServoAction(leftExtension, rightExtension, ServoAction.DoubleActionType.GO_TO_BASKET_POSITION),
             GamepadKeys.Button.A, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_MAX_ROTATION),
             GamepadKeys.Button.B, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_MIN_ROTATION),
-            GamepadKeys.Button.X, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_ZERO_ROTATION)
+            GamepadKeys.Button.X, new ServoAction(extensionRotater, ServoAction.SingleActionType.GO_TO_MID_ROTATION),
+            GamepadKeys.Button.Y, new ServoAction(leftExtension, ServoAction.SingleActionType.ENABLE_PIECE_PICKING)
         ));
 
         MecanumDriveFactory.getInstance().addTriggerGameActions(gamepadEx, Map.of(
@@ -81,7 +85,7 @@ public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
                "Back Left Encoder Distance", () -> drive.getMotors().get(2).encoder.getDistance(),
                "Back Right Encoder Distance", () -> drive.getMotors().get(3).encoder.getDistance(),
                 "IMU current orientation", () -> drive.getIMU().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES),
-                "Picking Piece Enabled", () -> extensionRotater.toggle
+                "Toggle Enabled", () -> leftClaw.toggle
         ));
 
         initializeGameActions();
@@ -89,10 +93,15 @@ public class MecanumDriveTeleop extends CommandOpMode implements ActionFactory {
         drive.resetEncoders();
         command.addRequirements(drive);
         drive.setDefaultCommand(command);
+
+        server = new AndroidStudioServer();
+        new Thread(() -> server.launch()).start();
     }
 
     @Override
     public void run() {
+        server.getSpecs().getMotorSpecs().setMotorPower(drive.getMotors().get(0).get());
+        server.getSpecs().getOrientationSpecs().setCurrentOrientationDegrees(drive.getIMU().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         gamepadEx.readButtons();
         for(Map.Entry<String, Supplier<Object>> entry : telemetryMap.entrySet()) {
             telemetry.addData(entry.getKey(), entry.getValue().get());

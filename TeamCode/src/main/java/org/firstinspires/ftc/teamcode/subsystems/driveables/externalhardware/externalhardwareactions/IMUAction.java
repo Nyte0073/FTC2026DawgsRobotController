@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.driveables.externalhardware.externalhardwareactions;
 
 import com.qualcomm.robotcore.hardware.IMU;
-
 import java.util.function.Consumer;
 
 /**Represents an action that can be done to the IMU system of the robot.*/

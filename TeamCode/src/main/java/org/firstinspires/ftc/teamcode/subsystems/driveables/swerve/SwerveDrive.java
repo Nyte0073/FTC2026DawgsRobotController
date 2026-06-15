@@ -5,15 +5,13 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.driveables.Vector;
-import org.firstinspires.ftc.teamcode.subsystems.io.AndroidStudioServer;
-import org.firstinspires.ftc.teamcode.subsystems.io.RobotSpecs;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 
+/***/
 public class SwerveDrive extends Swerve {
-    private Thread[] robotThreads = null;
     private final LinkedList<SwerveModule> modules = new LinkedList<>();
     private final IMU imu;
 
@@ -25,9 +23,7 @@ public class SwerveDrive extends Swerve {
 
     @Override
     public void stopThreads() {
-        for(Thread t : getRobotThreads()) {
-            t.interrupt();
-        }
+        System.out.println("Stopping threads.");
     }
 
     @Override
@@ -41,26 +37,6 @@ public class SwerveDrive extends Swerve {
             Vector translatedAndRotatedVector = swerveModule.calculateTranslatedAndRotatedMotorVector(rotating,
                     clockwise, driverVector, driverVector.getZ());
             swerveModule.applyTransAndRotVectorToMotor(translatedAndRotatedVector, currentRobotOrientation);
-        }
-    }
-
-    @SuppressWarnings("all")
-    @Override
-    public Thread[] getRobotThreads() {
-        if(robotThreads == null) {
-            AndroidStudioServer server = new AndroidStudioServer(() -> new RobotSpecs(null, null));
-            robotThreads = new Thread[] {
-                    new Thread(() -> {
-                        try {
-                            server.launchSendingServer();
-                        } catch(Exception e) {
-                            e.printStackTrace();
-                        }
-                    })
-            };
-            return robotThreads;
-        } else {
-            return robotThreads;
         }
     }
 

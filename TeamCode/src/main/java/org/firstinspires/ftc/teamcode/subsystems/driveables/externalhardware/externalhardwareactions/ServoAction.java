@@ -49,9 +49,9 @@ public class ServoAction implements HardwareAction {
         GO_TO_MIN_RIGHT_EXTENSION(s -> s.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.RIGHT_EXTENSION_SERVO_MINIMUM)),
         GO_TO_MAX_LEFT_EXTENSION(s -> s.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.LEFT_EXTENSION_SERVO_MAXIMUM)),
         GO_TO_MIN_LEFT_EXTENSION(s -> s.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.LEFT_EXTENSION_SERVO_MINIMUM)),
-        GO_TO_MAX_ROTATION(s -> s.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.CLAW_MAXIMUM)),
-        GO_TO_MIN_ROTATION(s -> s.servo.turnToAngle(ExternalHardwareConstants.ServoImplConstants.CLAW_MINIMUM)),
-        GO_TO_ZERO_ROTATION(s -> s.servo.turnToAngle(0)),
+        GO_TO_MAX_ROTATION(s -> s.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.CLAW_MAX_ROTATION)),
+        GO_TO_MIN_ROTATION(s -> s.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.CLAW_MIN_ROTATION)),
+        GO_TO_MID_ROTATION(s -> s.servo.turnToAngle(0)),
         ENABLE_PIECE_PICKING(s -> s.pickingPieceToggle = !s.pickingPieceToggle);
 
         public final Consumer<ServoImpl> consumer;
@@ -92,13 +92,20 @@ public class ServoAction implements HardwareAction {
 
         CLAW_GRAB_RELEASE((leftServoImpl, rightServoImpl) -> {
             leftServoImpl.toggle = !leftServoImpl.toggle;
+            double leftClawPosition, rightClawPosition;
             if(!leftServoImpl.toggle) {
-                leftServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.LEFT_EXTENSION_SERVO_MINIMUM);
-                rightServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.RIGHT_EXTENSION_SERVO_MINIMUM);
+                /*if opened already*/
+               leftClawPosition = leftServoImpl.pickingPieceToggle ? ExternalHardwareConstants.ServoImplConstants.LEFT_CLAW_MAX_FOAM_PIECE_ROTATION
+                       : ExternalHardwareConstants.ServoImplConstants.LEFT_CLAW_MAX_ROTATION;
+               rightClawPosition = leftServoImpl.pickingPieceToggle ? ExternalHardwareConstants.ServoImplConstants.RIGHT_CLAW_MAX_FOAM_PIECE_ROTATION
+                       : ExternalHardwareConstants.ServoImplConstants.RIGHT_CLAW_MAX_ROTATION;
             } else {
-                leftServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.LEFT_EXTENSION_SERVO_MAXIMUM);
-                rightServoImpl.servo.setPosition(ExternalHardwareConstants.ServoImplConstants.RIGHT_EXTENSION_SERVO_MAXIMUM);
+                /*if closed already*/
+                leftClawPosition = ExternalHardwareConstants.ServoImplConstants.CLAW_MINIMUM;
+                rightClawPosition = ExternalHardwareConstants.ServoImplConstants.CLAW_MINIMUM;
             }
+            leftServoImpl.servo.turnToAngle(leftClawPosition);
+            rightServoImpl.servo.turnToAngle(rightClawPosition);
         });
 
         public final BiConsumer<ServoImpl, ServoImpl> biConsumer;
