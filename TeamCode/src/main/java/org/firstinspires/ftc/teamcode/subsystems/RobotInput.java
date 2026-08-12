@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import java.util.Map;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public class RobotInput {
     private final GamepadEx gamepadEx;
@@ -21,12 +22,12 @@ public class RobotInput {
         imu = null;
     }
 
-    public Map<InputType, Double> getRobotDriveBaseInput() {
+    public Map<InputType, Supplier<Double>> getRobotDriveBaseInput() {
         return Map.of(
-                InputType.FORWARD, gamepadEx.getLeftY(),
-                InputType.SIDEWARDS, gamepadEx.getRightY(),
-                InputType.ROTATION, gamepadEx.getRightX(),
-                InputType.ORIENTATION_DEGREES, imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
+                InputType.FORWARD, gamepadEx::getLeftY,
+                InputType.SIDEWARDS, gamepadEx::getRightY,
+                InputType.ROTATION, gamepadEx::getRightX,
+                InputType.ORIENTATION_DEGREES, () -> imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
         );
     }
 
@@ -36,20 +37,15 @@ public class RobotInput {
         );
     }
 
+    public GamepadEx getGamepadEx() {
+        return gamepadEx;
+    }
+
     public enum InputType {
         FORWARD,
         SIDEWARDS,
         ROTATION,
         ORIENTATION_DEGREES,
         PINCER_SYSTEM_TOGGLE
-    }
-
-    public static final class AutoRobotInput {
-        public final double forward, sideward;
-
-        public AutoRobotInput(double forward, double sideward) {
-            this.forward = forward;
-            this.sideward = sideward;
-        }
     }
 }

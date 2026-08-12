@@ -29,7 +29,11 @@ public class PathPlanner {
 
                         @Override
                         public void execute() {
-                            drivetrain.drive(fieldOriented, true, trajectory);
+                            try {
+                                drivetrain.drive(fieldOriented, true, trajectory);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
                         }
 
                         @Override

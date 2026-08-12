@@ -21,6 +21,10 @@ public class TeleopDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        drivetrain.drive(fieldOriented, false, null);
+       try {
+           drivetrain.drive(fieldOriented, false, null);
+       } catch(Exception e) {
+           throw new RuntimeException(e);
+       }
     }
 }

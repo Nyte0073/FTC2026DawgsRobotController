@@ -21,7 +21,7 @@ public abstract class Drivetrain extends SubsystemBase {
     public Drivetrain() {
         input = null;
     }
-    public abstract void drive(boolean fieldOriented, boolean vectorControlled, Trajectory vectorTrajectory);
+    public abstract void drive(boolean fieldOriented, boolean vectorControlled, Trajectory vectorTrajectory) throws Exception;
     public void driveAutonomous(PathPlanner pathPlanner) {
         CommandScheduler.getInstance().schedule(
                pathPlanner.buildCommands()

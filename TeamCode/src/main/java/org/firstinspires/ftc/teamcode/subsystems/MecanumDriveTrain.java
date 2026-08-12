@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.pathplanning.Trajectory;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class MecanumDriveTrain extends Drivetrain {
 
@@ -37,8 +38,8 @@ public class MecanumDriveTrain extends Drivetrain {
     }
 
     @Override
-    public void drive(boolean fieldOriented, boolean vectorControlled, Trajectory vectorTrajectory) {
-        Map<RobotInput.InputType, Double> inputMap = getInput().getRobotDriveBaseInput();
+    public void drive(boolean fieldOriented, boolean vectorControlled, Trajectory vectorTrajectory) throws Exception {
+        Map<RobotInput.InputType, Supplier<Double>> inputMap = getInput().getRobotDriveBaseInput();
         double sideward = vectorTrajectory.magnitude * Math.cos(vectorTrajectory.rotation) * Constants.DAMPER,
                 forward = vectorTrajectory.magnitude * Math.sin(vectorTrajectory.rotation) * Constants.DAMPER;
         if(fieldOriented && vectorControlled) {
@@ -46,12 +47,12 @@ public class MecanumDriveTrain extends Drivetrain {
         } else if(vectorControlled) {
             drive.driveRobotCentric(sideward, forward, 0);
         } else if(fieldOriented) {
-            drive.driveFieldCentric(inputMap.get(RobotInput.InputType.SIDEWARDS),
-                    inputMap.get(RobotInput.InputType.FORWARD), inputMap.get(RobotInput.InputType.ROTATION),
-                    inputMap.get(RobotInput.InputType.ORIENTATION_DEGREES));
+            drive.driveFieldCentric(inputMap.get(RobotInput.InputType.SIDEWARDS).get(),
+                    inputMap.get(RobotInput.InputType.FORWARD).get(), inputMap.get(RobotInput.InputType.ROTATION).get(),
+                    inputMap.get(RobotInput.InputType.ORIENTATION_DEGREES).get());
         } else {
-            drive.driveRobotCentric(inputMap.get(RobotInput.InputType.SIDEWARDS), inputMap.get(RobotInput.InputType.FORWARD),
-                    inputMap.get(RobotInput.InputType.ROTATION));
+            drive.driveRobotCentric(inputMap.get(RobotInput.InputType.SIDEWARDS).get(), inputMap.get(RobotInput.InputType.FORWARD).get(),
+                    inputMap.get(RobotInput.InputType.ROTATION).get());
         }
     }
 

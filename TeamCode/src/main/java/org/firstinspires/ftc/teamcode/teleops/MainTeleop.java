@@ -11,12 +11,16 @@ import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.PincerSystem;
 import org.firstinspires.ftc.teamcode.subsystems.RobotInput;
+import org.firstinspires.ftc.teamcode.subsystems.SwerveDriveTrain;
+
+import java.util.Map;
 
 @TeleOp(name = "MainTeleop", group = "teamcode")
 public class MainTeleop extends CommandOpMode {
 
     @Override
     public void initialize() {
+        /*Example of Mecanum drivetrain initialization.*/
         RobotInput robotInput = new RobotInput(
                 new GamepadEx(gamepad1), hardwareMap.get(IMU.class, "imu"));
         Drivetrain drivetrain = new MecanumDriveTrain(robotInput,
@@ -30,5 +34,20 @@ public class MainTeleop extends CommandOpMode {
                 robotInput
         );
         hardwareCommand.initialize();
+
+        /*Example of Swerve drivetrain initialization.*/
+        RobotInput rInput = new RobotInput(
+                new GamepadEx(gamepad1), hardwareMap.get(IMU.class, "imu")
+        );
+        Drivetrain swerveDrivetrain = new SwerveDriveTrain(
+                Map.of(
+                        "frontLeftTurning", "frontLeftDriving",
+                        "frontRightTurning", "frontRightDriving",
+                        "backLeftTurning", "backLeftDriving",
+                        "backRightTurning", "backRightDriving"
+                ), rInput, hardwareMap
+        );
+        TeleopDriveCommand swerveDriveCommand = new TeleopDriveCommand(swerveDrivetrain, true);
+        swerveDriveCommand.initialize();
     }
 }
