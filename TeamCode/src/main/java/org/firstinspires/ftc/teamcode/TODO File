@@ -1,0 +1,19 @@
+InternalComponent:
+- Should be able to do some kind of function
+
+- Should not be able to take in any parameters, as that will be the job of the abstract internal system types
+that will extend it
+
+Chassis:
+- Should take in general parameters for the initialization of whatever needs to be initialized, with the class itself providing
+an abstract method to allow for initialization using the generalized parameters
+
+- Should be able define an abstract helper method for utility classes that give info on the specs of the chassis, the return type
+being an implementation of the ChassisState interface
+
+ChassisState:
+- Should be able to define methods for calling certain types from the different chassis's depending on the state type inputted
+
+- Should be able to define methods to also set the state of the chassis's drive modules to ensure that all the information the drive modules
+need in order to drive properly will be right there, ready to use
+
