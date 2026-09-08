@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -14,13 +13,13 @@ import java.util.Map;
 public abstract class Chassis extends SubsystemBase implements HardwareComponent {
 
     private final Telemetry telemetry;
-    private IMU imu;
+    private IMUWrapper imu;
     private final HardwareMap hardwareMap;
     private final List<MotorWrapper> driveMotors;
     private boolean fieldOriented;
     private final Supplier<Double> getX, getY,getRot;
 
-    public Chassis(Telemetry telemetry, HardwareMap hardwareMap, List<MotorWrapper> driveMotors, GamepadEx gamepadEx) {
+    public Chassis(Telemetry telemetry, HardwareMap hardwareMap, List<MotorWrapper> driveMotors, GamepadExWrapper gamepadEx) {
         this.telemetry = telemetry;
         this.hardwareMap = hardwareMap;
         this.driveMotors = driveMotors;
@@ -38,16 +37,20 @@ public abstract class Chassis extends SubsystemBase implements HardwareComponent
                 shutdown();
                 throw new RuntimeException(e);
             }
+        } else {
+            stopMotors();
         }
     }
 
     /*Returns the gyroscope device used for determining the orientation (in degrees, prematurely) of the robot
     * things like certain field oriented drive methods for certain drivetrains.*/
     public IMU getIMU() {
-        if(imu == null) {
-            imu = hardwareMap.get(IMU.class, SubsystemConstants.IMU_ID);
+        if(imu == null && hardwareMap != null) {
+            imu = new IMUWrapper(hardwareMap, SubsystemConstants.IMU_ID);
+        } else {
+            imu = new IMUWrapper("imu");
         }
-        return imu;
+        return imu.imu;
     }
 
     /*Sets the relative orientation of the robot to either the field or the robot itself, depending on how the robot is desired to
@@ -72,6 +75,8 @@ public abstract class Chassis extends SubsystemBase implements HardwareComponent
     /*Making sure that the chassis itself has a way to shut itself down, because for example, if a swerve system is using an executor
     * service, if something goes wrong and an exception is called, the executor service must be shut down before the program is shut down.*/
     public abstract void shutdown();
+
+    public abstract void stopMotors();
 
     /*This will return mapping to information that should be displayed in the telemetry object given by using the CommandOpMode
     * extension class. This method is made abstract to assure that the user doesn't necessarily have to get information from the robot,

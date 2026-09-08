@@ -17,17 +17,23 @@ public class ChassisMath {
     };
 
     public static final BiFunction<Double, Double, Double> vectorMagnitude = Math::hypot,
-    currentMotorPositionTicksToDegrees = (currentMotorPositionTicks, motorTicksPerRev) ->
-            360 * (currentMotorPositionTicks / motorTicksPerRev),
-    calculateCurrentTargetHeadingDifference = (targetHeading, currentHeading) ->
-            (targetHeading - currentHeading + 540) % 360 - 180,
-    calculateTargetHeading = (forward, sideward) ->
-            (forward <= SubsystemConstants.COMPONENT_POWER_MINIMUM_THRESHOLD && sideward <= SubsystemConstants.COMPONENT_POWER_MINIMUM_THRESHOLD) ?
-            0 : Math.toDegrees(Math.atan2(forward, sideward)) - 90,
-    optimizeHeading = (totalHeading, currentHeading) ->
-            Math.abs(totalHeading) > 90 ? calculateTargetHeading.apply(
-                    totalHeading < 0 ? totalHeading + 180 : totalHeading - 180, currentHeading
-            ) : totalHeading,
+            currentMotorPositionTicksToDegrees = (currentMotorPositionTicks, motorTicksPerRev) ->
+                    360 * (currentMotorPositionTicks / motorTicksPerRev),
+            calculateCurrentTargetHeadingDifference = (targetHeading, currentHeading) ->
+                    (targetHeading - currentHeading + 540) % 360 - 180,
+            calculateTargetHeading = (forward, sideward) ->
+                    Math.toDegrees(Math.atan2(forward, sideward)) - 90,
+            optimizeHeading = (totalHeading, currentHeading) -> {
+                double optimizedHeading;
+                if(Math.abs(totalHeading) > 90 && totalHeading < 0) {
+                  optimizedHeading = totalHeading + 180;
+                } else if(Math.abs(totalHeading) > 90){
+                   optimizedHeading = totalHeading - 180;
+                } else {
+                    optimizedHeading = totalHeading;
+                }
+                return optimizedHeading;
+            },
     degreesToTicks = (positionDegrees, motorTicksPerRev) ->
             positionDegrees / 360 * motorTicksPerRev;
     public static final BiFunction<Double, Boolean, Vector2d> mecanumVectorXAndYComponents = (vectorMagnitude, frontLeftBackRight) -> {

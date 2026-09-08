@@ -61,7 +61,7 @@ public class SwerveChassisState implements ChassisState {
         String motorName;
         double currentRobotOrientation = getCurrentOrientation(AngleUnit.DEGREES);
         for(SwerveChassis.SwerveModule module : swerveChassis.swerveModules) {
-            MotorWrapper drivingMotor = module.drivingMotor, turningMotor = module.turningMotor;
+            MotorWrapper drivingMotor = module.drivingMotor, turningMotor = module.turningMotorWrapper.getPidControlledMotor();
             motorName = drivingMotor.motorName.toLowerCase();
             double mDistance = drivingMotor.getDistance();
             double distanceDifference = mDistance - previousCalculatedDistance.get(drivingMotor);

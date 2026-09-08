@@ -17,10 +17,10 @@ public class MecanumChassis extends Chassis {
     private final ChassisState state;
     private long systemTimeMillis;
 
-    public MecanumChassis(Telemetry telemetry, HardwareMap hardwareMap, List<MotorWrapper> driveMotors, GamepadEx gamepadEx) {
+    public MecanumChassis(Telemetry telemetry, HardwareMap hardwareMap, List<MotorWrapper> driveMotors, GamepadExWrapper gamepadEx) {
         super(telemetry, hardwareMap, driveMotors, gamepadEx);
         mecanumChassis = new MecanumDrive(
-                driveMotors.get(0), driveMotors.get(1), driveMotors.get(2), driveMotors.get(3)
+                driveMotors.get(0).motorEx, driveMotors.get(1).motorEx, driveMotors.get(2).motorEx, driveMotors.get(3).motorEx
         );
         state = new MecanumChassisState(this);
     }
@@ -54,6 +54,13 @@ public class MecanumChassis extends Chassis {
     @Override
     public void shutdown() {
         mecanumChassis.stop();
+    }
+
+    @Override
+    public void stopMotors() {
+        for(MotorWrapper motorWrapper : getSubsystemWheelMotors()) {
+            motorWrapper.stopMotor();
+        }
     }
 
     @Override

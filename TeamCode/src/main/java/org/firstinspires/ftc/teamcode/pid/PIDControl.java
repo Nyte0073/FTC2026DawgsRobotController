@@ -1,62 +1,44 @@
 package org.firstinspires.ftc.teamcode.pid;
 
-import android.os.SystemClock;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.subsystems.MotorWrapper;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class PIDControl {
-    private final Map<MotorWrapper, PIDControllerWrapper> motorsToControllers = new HashMap<>();
-    private final Map<MotorWrapper, ChassisPIDKinematics> motorsToKinematics = new HashMap<>();
     private boolean usesAngularOrientation = false;
     private final ExecutorService service = Executors.newSingleThreadExecutor();
+    private List<PIDWrapper> pidWrappers = new ArrayList<>();
 
-    public PIDControl(List<MotorWrapper> motors, ChassisPIDKinematics.PIDKinematicsType kinematicsType, boolean resetEncoders) {
-        for(MotorWrapper motorWrapper : motors) {
-        ChassisPIDKinematics kinematics = ChassisPIDKinematics.instance(kinematicsType, motorWrapper);
-        motorWrapper.setDistancePerPulse(kinematics.getDistancePerPulse());
-        motorsToControllers.put(motorWrapper, new PIDControllerWrapper(
-                    kinematics.getKP(), kinematics.getKI(), kinematics.getKD()
-            ));
-        motorsToKinematics.put(motorWrapper, kinematics);
-        }
-        if(resetEncoders) resetMotorEncoders();
+    public PIDControl(List<PIDWrapper> pidWrappers, boolean resetEncoders) throws Exception {
+        this.pidWrappers.addAll(pidWrappers);
+        if(resetEncoders) { resetMotorEncoders(); }
         start();
     }
 
     public void resetMotorEncoders() {
-        for(MotorWrapper motorWrapper : motorsToControllers.keySet()) {
-            motorWrapper.resetEncoder();
-        }
+       for(PIDWrapper pidWrapper : pidWrappers) {
+           pidWrapper.getPidControlledMotor().resetEncoder();
+       }
     }
 
     public boolean allWheelsAtSetPoint() {
-        for(PIDControllerWrapper PIDControllerWrapper : motorsToControllers.values()) {
-            if(!PIDControllerWrapper.atSetPoint()) return false;
-        }
-        return true;
+       for(PIDWrapper pidWrapper : pidWrappers) {
+           if(!pidWrapper.getPidController().atSetPoint()) return false;
+       }
+       return true;
     }
 
-    public boolean wheelAtSetPoint(MotorWrapper motorWrapper) {
-        if(!ensureMotorWrapperPresent(motorWrapper)) {
-            throw new RuntimeException("Motor not present!");
-        }
-        return motorsToControllers.get(motorWrapper).atSetPoint();
+    public boolean wheelAtSetPoint(PIDWrapper pidwrapper) {
+       return pidwrapper.getPidController().atSetPoint();
     }
 
     public void setUsesAngularOrientation(boolean usesAngularOrientation) {
            this.usesAngularOrientation = usesAngularOrientation;
-           Map<MotorWrapper, Double> map = new HashMap<>();
-           for(MotorWrapper wrapper : motorsToControllers.keySet()) {
-               map.put(wrapper, 0.0);
-           }
-           setWheelsTargetPositions(map);
     }
 
     public boolean usesAngularOrientation() {
@@ -67,47 +49,61 @@ public class PIDControl {
     * for all the wheels because if they are rotating or are part of a mecanum drive chassis, then the wheels will need to have their
     * positions set to different values, or if the wheels are not perfectly synced then you will need to make sure that every wheel
     * gets a compensated target position to sync them back up again in the next drive movement sequence.*/
-    public void setWheelsTargetPositions(Map<MotorWrapper, Double> motorsToTargetPositions) {
-            for(Map.Entry<MotorWrapper, Double> entry : motorsToTargetPositions.entrySet()) {
-                MotorWrapper m = entry.getKey();
-                if(ensureMotorWrapperPresent(m)) {
-                    motorsToControllers.get(m).setSetPoint(entry.getValue());
-                }
-
+    public void setWheelsTargetPositions(Map<PIDWrapper, Double> wrappersToTargetPositions) {
+        for(Map.Entry<PIDWrapper, Double> entry : wrappersToTargetPositions.entrySet()) {
+            entry.getKey().getPidController().setSetPoint(entry.getValue());
         }
     }
 
-    public void setWheelTargetPosition(MotorWrapper motorWrapper, double targetPosition) {
-        if(ensureMotorWrapperPresent(motorWrapper)) {
-            motorsToControllers.get(motorWrapper).setSetPoint(targetPosition);
+    public void setWheelTargetPosition(PIDWrapper pidWrapper, double targetPosition) {
+        pidWrapper.getPidController().setSetPoint(targetPosition);
+    }
+
+    private boolean ensureMotorWrapperPresent(PIDWrapper pidWrapper) {
+        return pidWrapper.getPidControlledMotor() != null;
+    }
+
+    public double pidCalculateForMotor(PIDWrapper pidWrapper) {
+        boolean kinematicsNotNull = pidWrapper.getChassisPIDKinematics() != null;
+        double returnedCalculate;
+        if(usesAngularOrientation && kinematicsNotNull) {
+            returnedCalculate = pidWrapper.getPidController().calculate(
+                    pidWrapper.getChassisPIDKinematics().getAngularOrientation(AngleUnit.DEGREES)
+            );
+        } else if(!usesAngularOrientation) {
+            returnedCalculate = pidWrapper.getPidController().calculate(
+                    pidWrapper.getChassisPIDKinematics().getDistance());
+        } else {
+            returnedCalculate = 0;
         }
-    }
-
-    private boolean ensureMotorWrapperPresent(MotorWrapper motorWrapper) {
-        return motorsToControllers.keySet().contains(motorWrapper) && motorWrapper != null;
-    }
-
-    public double pidCalculateForMotor(MotorWrapper motorWrapper) {
-        ChassisPIDKinematics kinematics = ensureMotorWrapperPresent(motorWrapper) ? motorsToKinematics.get(motorWrapper) : null;
-        return kinematics != null ?  motorsToControllers.get(motorWrapper).calculate(
-            usesAngularOrientation ? kinematics.getAngularOrientation(AngleUnit.DEGREES) : kinematics.getDistance()
-        ) : null;
+        return returnedCalculate;
     }
 
     private void start() {
         service.submit(() -> {
-            double calculate;
-            while(!Thread.currentThread().isInterrupted() && !service.isShutdown()) {
+            double calculate, initialCalc;
+            while(!Thread.currentThread().isInterrupted()) {
                 try {
-                    for(MotorWrapper motorWrapper : motorsToControllers.keySet()) {
-                        calculate = pidCalculateForMotor(motorWrapper);
-                        motorWrapper.set(calculate);
+                    for(PIDWrapper pidWrapper : pidWrappers) {
+                        initialCalc = pidCalculateForMotor(pidWrapper);
+                        calculate = Math.min(1, Math.abs(initialCalc)) * Math.signum(initialCalc);
+                        pidWrapper.getPidControlledMotor().set(calculate);
                     }
                 } catch(Exception e) {
+                    System.out.println("Exception happened.");
                     service.shutdown();
                 }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-            SystemClock.sleep(10);
+
         });
+    }
+
+    public double getSetPoint(PIDWrapper pidWrapper) {
+        return pidWrapper.getPidController().getSetPoint();
     }
 }
