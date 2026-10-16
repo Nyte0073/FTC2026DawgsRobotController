@@ -1,6 +1,21 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import java.util.Map;
+
 public class SubsystemConstants {
+
+    public static final Map<String, Double> SWERVE_TURNING_MOTOR_ROTATION_POSITIONS;
+
+    /*---------------------------------------------------------------------*/
+
+    public static final String FRONT_LEFT_SWERVE_TURNING_MOTOR_ID = "frontLeftSwerveTurningMotor",
+    FRONT_RIGHT_SWERVE_TURNING_MOTOR_ID = "frontRightSwerveTurningMotor",
+    BACK_LEFT_SWERVE_TURNING_MOTOR_ID = "backLeftSwerveTurningMotor",
+    BACK_RIGHT_SWERVE_TURNING_MOTOR_ID = "backRightSwerveTurningMotor", FRONT_LEFT_SWERVE_DRIVING_MOTOR_ID = "frontLeftSwerveDrivingMotor",
+    FRONT_RIGHT_SWERVE_DRIVING_MOTOR_ID = "frontRightSwerveDrivingMotor",
+    BACK_LEFT_SWERVE_DRIVING_MOTOR_ID = "backLeftSwerveDrivingMotor", BACK_RIGHT_SWERVE_DRIVING_MOTOR_ID = "backRightSwerveDrivingMotor";
+
+    /*---------------------------------------------------------------------*/
 
     public static final String IMU_ID = "imu",
     MECANUM_CHASSIS_FRONT_LEFT_MOTOR_ID = "frontLeftMecanumDriveMotor",
@@ -25,4 +40,20 @@ public class SubsystemConstants {
     /*---------------------------------------------------------------------*/
     WHEEL_STALLING_THRESHOLD = 0.5, STALLING_VELOCITY_THRESHOLD = 10, MOTOR_STALL_WAIT_TIME_MILLIS = 1500,
     COMPONENT_POWER_MINIMUM_THRESHOLD = 0.05;
+
+    /*---------------------------------------------------------------------*/
+
+    public static final double FRONT_LEFT_SWERVE_TURNING_MOTOR_ROTATE_POSITION_DEGREES = -45.0,
+            FRONT_RIGHT_SWERVE_TURNING_MOTOR_ROTATE_POSITION_DEGREES = -135.0,
+            BACK_LEFT_SWERVE_TURNING_MOTOR_ROTATE_POSITION_DEGREES = 45.0,
+            BACK_RIGHT_SWERVE_TURNING_MOTOR_ROTATE_POSITION_DEGREES = 135.0;
+
+    static {
+        SWERVE_TURNING_MOTOR_ROTATION_POSITIONS = Map.of(
+            FRONT_LEFT_SWERVE_TURNING_MOTOR_ID, FRONT_LEFT_SWERVE_TURNING_MOTOR_ROTATE_POSITION_DEGREES,
+                FRONT_RIGHT_SWERVE_TURNING_MOTOR_ID, FRONT_RIGHT_SWERVE_TURNING_MOTOR_ROTATE_POSITION_DEGREES,
+                BACK_LEFT_SWERVE_TURNING_MOTOR_ID, BACK_LEFT_SWERVE_TURNING_MOTOR_ROTATE_POSITION_DEGREES,
+                BACK_RIGHT_SWERVE_TURNING_MOTOR_ID, BACK_RIGHT_SWERVE_TURNING_MOTOR_ROTATE_POSITION_DEGREES
+        );
+    }
 }

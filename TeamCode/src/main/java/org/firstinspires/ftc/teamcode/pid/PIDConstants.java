@@ -11,4 +11,8 @@ public final class PIDConstants {
 
             ARCADE_TANK_CHASSIS_DISTANCE_PER_PULSE = 0, ARCADE_TANK_CHASSIS_KP = 0, ARCADE_TANK_CHASSIS_KI = 0, ARCADE_TANK_CHASSIS_KD = 0,
             PID_TOLERANCE = 2;
+
+    /*---------------------------------------------------------------------*/
+
+    public static final double IMU_KP = 0.005, IMU_KI = 0, IMU_KD = 0.00001;
 }

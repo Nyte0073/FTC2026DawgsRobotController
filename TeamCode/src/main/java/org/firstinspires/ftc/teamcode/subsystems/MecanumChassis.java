@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -26,7 +25,7 @@ public class MecanumChassis extends Chassis {
     }
 
     @Override
-    public void drive() {
+    public void drive(boolean rotate) {
         double forwards = getForward(), sidewards = getSideward(), rot = getRotation();
         double currentOrientation = state.getCurrentOrientation(AngleUnit.DEGREES);
         if(isFieldOriented()) {

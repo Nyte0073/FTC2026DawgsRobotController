@@ -6,7 +6,7 @@ public class MockGamepadExWrapper extends GamepadExWrapper {
 
     @Override
     public double getLeftX() {
-        return 1;
+        return 0;
     }
 
     @Override
@@ -16,6 +16,6 @@ public class MockGamepadExWrapper extends GamepadExWrapper {
 
     @Override
     public double getLeftY() {
-        return 1.0/2;
+        return 0;
     }
 }

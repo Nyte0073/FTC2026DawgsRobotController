@@ -9,14 +9,41 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/*Note for this class: Integrate a method where it relies on an angle wrapping kind of class to act as a setpoint */
+
 public class PIDControl {
-    private boolean usesAngularOrientation = false;
+    /*todo: make it so that this class can either run with motors or the gyroscope system on the robot, this way, it can handle pid for the robots'
+    *  drivetrains driving and for the gyroscope systems tracking rotation in real time, making the class more versatile. You can do this by changing
+    * the way the setter methods for the target positions of the motors work. Make it so that the methods have overloaded versions of themselves
+    * that can use angular settings instead, or if you don't want to make overloaded methods, then make a tiny helper class that can store both motor
+    * target positions and angular values, thus getting the user to put in an instance of this class into the one method that can use either value depending
+    * on the state of the boolean flag indicating rotation usage or not.*/
+    private boolean usesAngularOrientation = false, pidForIMU = false;
     private final ExecutorService service = Executors.newSingleThreadExecutor();
     private List<PIDWrapper> pidWrappers = new ArrayList<>();
+    private PIDIMUWrapper pidimuWrapper;
 
-    public PIDControl(List<PIDWrapper> pidWrappers, boolean resetEncoders) throws Exception {
+    public PIDControl(List<PIDWrapper> pidWrappers, boolean resetEncoders) {
         this.pidWrappers.addAll(pidWrappers);
         if(resetEncoders) { resetMotorEncoders(); }
+        start();
+    }
+
+    public PIDControl(List<PIDWrapper> pidWrappers, boolean resetEncoders, PIDIMUWrapper pidimuWrapper, boolean resetYaw) {
+        this.pidWrappers.addAll(pidWrappers);
+        if(resetEncoders) {
+            resetMotorEncoders();
+        }
+        this.pidimuWrapper = pidimuWrapper;
+        if(resetYaw) {
+            this.pidimuWrapper.getPidControlledIMUWrapper().resetYaw();
+        }
+        start();
+    }
+
+    public PIDControl(PIDIMUWrapper pidimuWrapper, boolean resetYaw) {
+        this.pidimuWrapper = pidimuWrapper;
+        if(resetYaw) pidimuWrapper.getPidControlledIMUWrapper().resetYaw();
         start();
     }
 
@@ -37,8 +64,16 @@ public class PIDControl {
        return pidwrapper.getPidController().atSetPoint();
     }
 
-    public void setUsesAngularOrientation(boolean usesAngularOrientation) {
+    public boolean imuAtSetPoint() {
+        return pidimuWrapper.getPidControllerWrapper().atSetPoint();
+    }
+
+    public void setUsesMotorAngularOrientation(boolean usesAngularOrientation) {
            this.usesAngularOrientation = usesAngularOrientation;
+    }
+
+    public void setPIDForIMU(boolean pidForIMU) {
+        this.pidForIMU = pidForIMU;
     }
 
     public boolean usesAngularOrientation() {
@@ -57,6 +92,10 @@ public class PIDControl {
 
     public void setWheelTargetPosition(PIDWrapper pidWrapper, double targetPosition) {
         pidWrapper.getPidController().setSetPoint(targetPosition);
+    }
+
+    public void setIMUTargetPosition(double targetDegrees, PIDIMUWrapper wrapper) {
+        pidimuWrapper.getPidControllerWrapper().setSetPoint(targetDegrees);
     }
 
     private boolean ensureMotorWrapperPresent(PIDWrapper pidWrapper) {
@@ -79,24 +118,46 @@ public class PIDControl {
         return returnedCalculate;
     }
 
+    public double pidCalculateForIMU(PIDIMUWrapper pidimuWrapper) {
+        double s = pidimuWrapper.getPidControlledIMUWrapper().getYaw(AngleUnit.DEGREES);
+        System.out.println("Current angle: " + s);
+        return pidimuWrapper.getPidControllerWrapper().calculate(
+                s
+        );
+    }
+
     private void start() {
         service.submit(() -> {
             double calculate, initialCalc;
-            while(!Thread.currentThread().isInterrupted()) {
-                try {
-                    for(PIDWrapper pidWrapper : pidWrappers) {
-                        initialCalc = pidCalculateForMotor(pidWrapper);
-                        calculate = Math.min(1, Math.abs(initialCalc)) * Math.signum(initialCalc);
-                        pidWrapper.getPidControlledMotor().set(calculate);
+            while(!Thread.currentThread().isInterrupted() && !service.isShutdown()) {
+                if(pidForIMU) {
+                    try {
+                        Thread.sleep(70);
+                    } catch(Exception e) {
+                        throw new RuntimeException(e);
                     }
-                } catch(Exception e) {
-                    System.out.println("Exception happened.");
-                    service.shutdown();
-                }
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    initialCalc = pidCalculateForIMU(pidimuWrapper);
+                    calculate = Math.min(1, Math.abs(initialCalc)) * Math.signum(initialCalc);
+                    for(PIDWrapper wrapper : pidWrappers) {
+                        wrapper.getPidControlledMotor().set(calculate);
+                    }
+                    pidimuWrapper.getPidControlledIMUWrapper().simulateMotion(calculate);
+                } else {
+                    try {
+                        for(PIDWrapper pidWrapper : pidWrappers) {
+                            initialCalc = pidCalculateForMotor(pidWrapper);
+                            calculate = Math.min(1, Math.abs(initialCalc)) * Math.signum(initialCalc);
+                            pidWrapper.getPidControlledMotor().set(calculate);
+                        }
+                    } catch(Exception e) {
+                        System.out.println("Exception happened.");
+                        service.shutdown();
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
 

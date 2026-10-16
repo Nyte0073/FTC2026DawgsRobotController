@@ -1,138 +1,76 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.arcrobotics.ftclib.geometry.Vector2d;
-
 import org.firstinspires.ftc.teamcode.mocktesting.MockGamepadExWrapper;
 import org.firstinspires.ftc.teamcode.mocktesting.MockIMU;
 import org.firstinspires.ftc.teamcode.mocktesting.MockMotorWrapper;
-import org.firstinspires.ftc.teamcode.pid.ChassisPIDKinematics;
 import org.firstinspires.ftc.teamcode.pid.PIDControl;
-import org.firstinspires.ftc.teamcode.pid.PIDWrapper;
-import org.junit.jupiter.api.Assertions;
+import org.firstinspires.ftc.teamcode.pid.PIDIMUWrapper;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 
 public class UnitTestingClass {
 
     @Test
-    public void testChassisMathXAndYComponents() {
-        Vector2d vector2d = ChassisMath.mecanumVectorXAndYComponents.apply(-2.0, true);
-        Assertions.assertEquals(2 * SubsystemConstants.NEGATIVE_COS_45, vector2d.getX());
-        Assertions.assertEquals(2 * SubsystemConstants.NEGATIVE_SIN_45, vector2d.getY());
-    }
-
-    @Test
-    public void testFieldPositionSwerveChassisCalculations() throws IOException {
-        File file = new File("/Users/braydenjonasrussell/IdeaProjects/UnitTestingFile.txt");
-        FileWriter writer = new FileWriter(file);
-        double currentOrientation = Math.toRadians(0);
-        double totalLeftDistance = 2;
-        double totalRightDistance = -totalLeftDistance;
-        Vector2d totalLeftDistanceVector = ChassisMath.regularVectorXAndYComponents.apply(totalLeftDistance, currentOrientation);
-        Vector2d totalRightDistanceVector = ChassisMath.regularVectorXAndYComponents.apply(totalRightDistance, currentOrientation);
-        Vector2d result = totalRightDistanceVector.plus(totalLeftDistanceVector);
-        writer.write(new StringBuilder()
-                .append("Total Left X: ")
-                .append(totalLeftDistanceVector.getX())
-                .append("\n")
-                .append("Total Left Y: ")
-                .append(totalLeftDistanceVector.getY())
-                .append("\n")
-                .append("Total Right X: ")
-                .append(totalRightDistanceVector.getX())
-                .append("\n")
-                .append("Total Right Y: ")
-                .append(totalRightDistanceVector.getY())
-                .toString());
-        writer.close();
-        Assertions.assertEquals(0, result.getX(), 0.001);
-        Assertions.assertEquals(0, result.getY(), 0.001);
-    }
-
-    @Test
-    public void testMockMotorWrapper() throws Exception {
-        File file = new File("/Users/braydenjonasrussell/IdeaProjects/UnitTestingFile.txt");
-        FileWriter writer = new FileWriter(file);
-        MockIMU mockIMU = new MockIMU("something kind of imu");
-        PIDWrapper pidWrapper = new PIDWrapper(new MockMotorWrapper("some motor"), ChassisPIDKinematics.PIDKinematicsType.MECANUM_KINEMATICS);
-        PIDControl pidControl = new PIDControl(
-                List.of(
-                    pidWrapper
-                ), true
-        );
-        mockIMU.setYaw(190);
-        pidControl.setWheelTargetPosition(pidWrapper, 1200);
-        Thread.sleep(6000);
-        writer.write(new StringBuilder()
-                        .append(mockIMU.getCurrentYaw())
-                        .append("\nMotorWrapper current position: ")
-                        .append(pidWrapper.getPidControlledMotor().getCurrentPosition())
-                .toString());
-        writer.close();
-    }
-
-    @Test
-    public void testSwerveChassisExecutorService() throws Exception {
-        File file = new File("/Users/braydenjonasrussell/IdeaProjects/UnitTestingFile.txt");
-        FileWriter writer = new FileWriter(file);
-        List<PIDWrapper> wrappers = new ArrayList<>();
-        SwerveChassis chassis = new SwerveChassis(null, null,
-                Map.of(
-                        new MockMotorWrapper("frontLeftDriving"), new MockMotorWrapper("frontLeftRotating"),
-                        new MockMotorWrapper("frontRightDriving"), new MockMotorWrapper("frontRightRotating"),
-                        new MockMotorWrapper("backLeftDriving"), new MockMotorWrapper("backLeftRotating"),
-                        new MockMotorWrapper("backRightDriving"), new MockMotorWrapper("backRightRotating")
-                ), new GamepadExWrapper());
-        for(SwerveChassis.SwerveModule module : chassis.getSwerveModules()) {
-            wrappers.add(module.turningMotorWrapper);
-        }
-        PIDControl pidControl = new PIDControl(wrappers, true);
-        Map<PIDWrapper, Double> map = new HashMap<>();
-        for(PIDWrapper pidWrapper : wrappers) {
-            map.put(pidWrapper, -1805.0);
-        }
-        pidControl.setWheelsTargetPositions(map);
-        StringBuilder stringBuilder = new StringBuilder();
-        Thread.sleep(6000);
-        for(PIDWrapper pidWrapper : wrappers) {
-            stringBuilder.append(pidControl.getSetPoint(pidWrapper) + "\n")
-                    .append("current position: " + pidWrapper.getPidControlledMotor().getCurrentPosition() + "\n");
-        }
-        writer.write(stringBuilder.toString());
-        writer.close();
-    }
-
-    @Test
-    public void testSwerveDrive() throws Exception {
-        File file = new File("/Users/braydenjonasrussell/IdeaProjects/UnitTestingFile.txt");
-        FileWriter writer = new FileWriter(file);
+    public void testSwerveDriveWithIMUPID() throws Exception {
+        PIDIMUWrapper wrapper = new PIDIMUWrapper(new MockIMU("imu"));
         SwerveChassis swerveChassis = new SwerveChassis(
-                null, null, Map.of(
-                new MockMotorWrapper("frontLeftDriving"), new MockMotorWrapper("frontLeftRotating"),
-                new MockMotorWrapper("frontRightDriving"), new MockMotorWrapper("frontRightRotating"),
-                new MockMotorWrapper("backLeftDriving"), new MockMotorWrapper("backLeftRotating"),
-                new MockMotorWrapper("backRightDriving"), new MockMotorWrapper("backRightRotating")
-        ), new MockGamepadExWrapper()
+              null, null, Map.of(
+                      new MockMotorWrapper(SubsystemConstants.FRONT_LEFT_SWERVE_DRIVING_MOTOR_ID),
+                new MockMotorWrapper(SubsystemConstants.FRONT_LEFT_SWERVE_TURNING_MOTOR_ID),
+                new MockMotorWrapper(SubsystemConstants.FRONT_RIGHT_SWERVE_DRIVING_MOTOR_ID),
+                new MockMotorWrapper(SubsystemConstants.FRONT_RIGHT_SWERVE_TURNING_MOTOR_ID),
+                new MockMotorWrapper(SubsystemConstants.BACK_LEFT_SWERVE_DRIVING_MOTOR_ID),
+                new MockMotorWrapper(SubsystemConstants.BACK_LEFT_SWERVE_TURNING_MOTOR_ID),
+                new MockMotorWrapper(SubsystemConstants.BACK_RIGHT_SWERVE_DRIVING_MOTOR_ID),
+                new MockMotorWrapper(SubsystemConstants.BACK_RIGHT_SWERVE_TURNING_MOTOR_ID)
+        ), new MockGamepadExWrapper(), wrapper
         );
-        long nanoTime = System.nanoTime();
-        while(((System.nanoTime() - nanoTime) / 1e9) <= 6) {
+
+        PIDControl control = swerveChassis.getPIDControlForTurningMotors(),
+        control2 = swerveChassis.getPIDControlForDrivingMotors();
+
+        swerveChassis.setRotate(true);
+        control.setPIDForIMU(false);
+        control2.setPIDForIMU(false);
+
+        long time = System.nanoTime();
+        while(!Thread.currentThread().isInterrupted() && (System.nanoTime() - time) < 3e9) {
             swerveChassis.function();
+            try {
+                Thread.sleep(10);
+            } catch(Exception e) {
+                throw new RuntimeException(e);
+            }
         }
-        swerveChassis.shutdown();
-        StringBuilder stringBuilder = new StringBuilder();
-        for(SwerveChassis.SwerveModule swerveModule : swerveChassis.getSwerveModules()) {
-            stringBuilder.append("SwerveModule turning motor position: " +
-                            swerveModule.turningMotorWrapper.getPidControlledMotor().getCurrentPosition() + "\n");
+
+        System.out.println("Ran the first loop. Going to the second one.");
+
+        control2.setIMUTargetPosition(245.0, wrapper);
+        control2.setPIDForIMU(true);
+        long time2 = System.nanoTime();
+        while(!Thread.currentThread().isInterrupted() && (System.nanoTime() - time2) < 10e9) {
+            try {
+                Thread.sleep(10);
+            } catch(Exception e) {
+                throw new RuntimeException(e);
+            }
         }
-        writer.write(stringBuilder.toString());
+
+        File file = new File("UnitTestingFile.txt");
+        FileWriter writer = new FileWriter(file);
+        StringBuilder builder = new StringBuilder();
+
+        for(SwerveChassis.SwerveModule module : swerveChassis.getSwerveModules()) {
+            MotorWrapper drivingMotor = module.drivingMotor,
+            turningMotor = module.turningMotorWrapper.getPidControlledMotor();
+
+            builder.append(drivingMotor.getMotorName()).append(" distance: ").append(drivingMotor.getDistance()).append("\n");
+            builder.append(turningMotor.getMotorName()).append(" current position: ").append(turningMotor.getCurrentPosition()).append("\n");
+        }
+        writer.write(builder.toString());
         writer.close();
     }
 }

@@ -27,4 +27,8 @@ public class IMUWrapper {
     public void resetYaw() {
         imu.resetYaw();
     }
+
+    public void simulateMotion(double calculate) {
+        System.out.println("Does nothing. Real IMU Wrapper.");
+    }
 }

@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import android.os.SystemClock;
-
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.pid.ChassisPIDKinematics;
 import org.firstinspires.ftc.teamcode.pid.PIDControl;
+import org.firstinspires.ftc.teamcode.pid.PIDIMUWrapper;
 import org.firstinspires.ftc.teamcode.pid.PIDWrapper;
 
 import java.util.ArrayList;
@@ -18,8 +17,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
+/*Note for this class: try to include a boolean flag for where if the optimized heading calculates a value for the motor to go to that
+* puts it in the opposite direction of its initial total heading, then make sure to reverse the motor power to counteract for the
+* flip in the direction.*/
 public class SwerveChassis extends Chassis {
 
     public final SwerveModule[] swerveModules;
@@ -27,24 +28,29 @@ public class SwerveChassis extends Chassis {
     private final ExecutorService mainWorkerService = Executors.newSingleThreadExecutor(),
     secondaryWorkerService;
     private final Map<MotorWrapper, Future<?>> completedTargetPositionSettingFutures = new HashMap<>();
-    private final ChassisState state;
-    private final PIDControl pidControl;
-    private final List<PIDWrapper> pidWrappers = new ArrayList<>();
-    public SwerveChassis(Telemetry telemetry, HardwareMap hardwareMap, Map<MotorWrapper, MotorWrapper> drivingMotorsToToTurningMotors, GamepadExWrapper gamepadEx) throws Exception {
-        super(telemetry, hardwareMap, drivingMotorsToToTurningMotors.values().stream().collect(Collectors.toList()), gamepadEx);
+
+    public SwerveChassis(Telemetry telemetry, HardwareMap hardwareMap, Map<MotorWrapper, MotorWrapper> drivingMotorsToToTurningMotors, GamepadExWrapper gamepadEx, PIDIMUWrapper pidimuWrapper)  {
+        super(telemetry, hardwareMap, new ArrayList<>(drivingMotorsToToTurningMotors.values()), gamepadEx);
         swerveModules = new SwerveModule[drivingMotorsToToTurningMotors.size()];
 
-        state = new SwerveChassisState(this);
         secondaryWorkerService = Executors.newFixedThreadPool(drivingMotorsToToTurningMotors.size());
         int i = 0;
         for(Map.Entry<MotorWrapper, MotorWrapper> entry : drivingMotorsToToTurningMotors.entrySet()) {
             swerveModules[i] = new SwerveModule(entry.getKey(), entry.getValue());
             i++;
         }
+        List<PIDWrapper> pidWrappersForTurningMotors = new ArrayList<>();
+        List<PIDWrapper> pidWrappersForDrivingMotors = new ArrayList<>();
+
+
         for(SwerveModule module : swerveModules) {
-            pidWrappers.add(module.turningMotorWrapper);
+            pidWrappersForTurningMotors.add(module.turningMotorWrapper);
+            pidWrappersForDrivingMotors.add(new PIDWrapper(module.drivingMotor, ChassisPIDKinematics.PIDKinematicsType.SWERVE_KINEMATICS));
         }
-        pidControl = new PIDControl(pidWrappers, true);
+            setPIDControlForTurningMotors(new PIDControl(pidWrappersForTurningMotors, true));
+            if(pidimuWrapper != null) {
+                setPIDControlForDrivingMotors(new PIDControl(pidWrappersForDrivingMotors, true, pidimuWrapper, false));
+            }
     }
 
     public SwerveModule[] getSwerveModules() {
@@ -52,38 +58,45 @@ public class SwerveChassis extends Chassis {
     }
 
     @Override
-    public void drive() {
+    public void drive(boolean rotate) {
+        PIDControl pidControl = getPIDControlForTurningMotors();
+        long time = System.nanoTime();
         if(!previousDrivingActionCompleted) {
             return;
         }
         /*Note: transform rotate into forward and sideward vectors.*/
         previousDrivingActionCompleted = false;
-        double forward = getForward(), sideward = getSideward();
+        double forward = getForward(), sideward = getSideward(), rotation = getRotation();
         double targetHeading = ChassisMath.calculateTargetHeading.apply(forward, sideward);
+
         mainWorkerService.submit(() -> {
-            for(SwerveModule module : swerveModules) {
-                MotorWrapper turningMotor = module.turningMotorWrapper.getPidControlledMotor();
-                double currentPositionTicks =  turningMotor.getCurrentPosition();
-                double currentPositionDegrees = ChassisMath.currentMotorPositionTicksToDegrees.apply(currentPositionTicks, turningMotor.getCPR());
-                double currentTargetHeadingDifference = ChassisMath.calculateCurrentTargetHeadingDifference.apply(
-                        targetHeading, currentPositionDegrees
-                );
-                double totalHeading = currentPositionDegrees + currentTargetHeadingDifference;
-                double optimizedHeading = ChassisMath.optimizeHeading.apply(totalHeading, currentPositionDegrees);
-                completedTargetPositionSettingFutures.put(turningMotor, secondaryWorkerService.submit(
-                        () -> {
-                            pidControl.setWheelTargetPosition(module.turningMotorWrapper, ChassisMath.degreesToTicks.apply(optimizedHeading,
-                                    turningMotor.getCPR()));
-                            while(!Thread.currentThread().isInterrupted() && !pidControl.wheelAtSetPoint(module.turningMotorWrapper)) {
-                                try {
-                                    Thread.sleep(10);
-                                } catch (InterruptedException e) {
-                                    throw new RuntimeException(e);
+                for(SwerveModule module : swerveModules) {
+                    MotorWrapper turningMotor = module.turningMotorWrapper.getPidControlledMotor();
+                    double currentPositionTicks =  turningMotor.getCurrentPosition();
+                    double currentPositionDegrees = ChassisMath.currentMotorPositionTicksToDegrees.apply(currentPositionTicks, turningMotor.getCPR());
+                    double currentTargetHeadingDifference = ChassisMath.calculateCurrentTargetHeadingDifference.apply(
+                            rotate ? SubsystemConstants.SWERVE_TURNING_MOTOR_ROTATION_POSITIONS.get(turningMotor.getMotorName())
+                            : targetHeading, currentPositionDegrees
+                    );
+                    double totalHeading = currentPositionDegrees + currentTargetHeadingDifference;
+                    double optimizedHeading = ChassisMath.optimizeHeading.apply(totalHeading, currentPositionDegrees);
+
+                    completedTargetPositionSettingFutures.put(turningMotor, secondaryWorkerService.submit(
+                            () -> {
+                                pidControl.setWheelTargetPosition(module.turningMotorWrapper, ChassisMath.degreesToTicks.apply(optimizedHeading,
+                                        turningMotor.getCPR()));
+
+                                while(!Thread.currentThread().isInterrupted() && !pidControl.wheelAtSetPoint(module.turningMotorWrapper)) {
+                                    try {
+                                        Thread.sleep(10);
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 }
                             }
-                        }
-                ));
-            }
+                    ));
+                }
+
             for(Future<?> future : completedTargetPositionSettingFutures.values()) {
                 try {
                     future.get();
@@ -93,8 +106,8 @@ public class SwerveChassis extends Chassis {
                     throw new RuntimeException(e);
                 }
             }
-            System.out.println("Setting drive power");
-            double drivingMotorPower = ChassisMath.vectorMagnitude.apply(forward, sideward);
+
+            double drivingMotorPower = rotate ? rotation : ChassisMath.vectorMagnitude.apply(forward, sideward);
             for(SwerveModule swerveModule : swerveModules) {
                 swerveModule.drivingMotor.set(drivingMotorPower);
             }
@@ -103,9 +116,10 @@ public class SwerveChassis extends Chassis {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            System.out.println("Time elapsed: " + ((System.nanoTime() - time) / 1e9));
             previousDrivingActionCompleted = true;
         });
-        System.out.println("Ran after the service.");
+
     }
 
     @Override

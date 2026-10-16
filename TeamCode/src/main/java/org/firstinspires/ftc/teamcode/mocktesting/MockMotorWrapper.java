@@ -11,9 +11,8 @@ public class MockMotorWrapper extends MotorWrapper {
         super(motorName);
     }
 
-    public boolean simulateMotion() {
+    public void simulateMotion() {
         currentPosition += (int) Math.round((100 * motorPower));
-        return true;
     }
 
     @Override

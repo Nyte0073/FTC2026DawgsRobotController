@@ -6,10 +6,13 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Supplier;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.pid.PIDControl;
 
 import java.util.List;
 import java.util.Map;
 
+/*Note for the Chassis class, make to PIDControl getter methods so that each chassis can have a PIDControl class for their turning motors
+* AND driving motors.*/
 public abstract class Chassis extends SubsystemBase implements HardwareComponent {
 
     private final Telemetry telemetry;
@@ -18,6 +21,8 @@ public abstract class Chassis extends SubsystemBase implements HardwareComponent
     private final List<MotorWrapper> driveMotors;
     private boolean fieldOriented;
     private final Supplier<Double> getX, getY,getRot;
+    private PIDControl pidControlForTurningMotors, pidControlForDrivingMotors;
+    private boolean rotate;
 
     public Chassis(Telemetry telemetry, HardwareMap hardwareMap, List<MotorWrapper> driveMotors, GamepadExWrapper gamepadEx) {
         this.telemetry = telemetry;
@@ -28,11 +33,31 @@ public abstract class Chassis extends SubsystemBase implements HardwareComponent
         this.getRot = gamepadEx::getRightX;
     }
 
+    public void setRotate(boolean rotate) {
+        this.rotate = rotate;
+    }
+
+    public void setPIDControlForTurningMotors(PIDControl pidControl) {
+        pidControlForTurningMotors = pidControl;
+    }
+
+    public void setPIDControlForDrivingMotors(PIDControl pidControlForDrivingMotors) {
+        this.pidControlForDrivingMotors = pidControlForDrivingMotors;
+    }
+
+    public PIDControl getPIDControlForDrivingMotors() {
+        return pidControlForDrivingMotors;
+    }
+
+    public PIDControl getPIDControlForTurningMotors() {
+        return pidControlForTurningMotors;
+    }
+
     @Override
     public void function() {
         if(drivingEnabled()) {
             try {
-                drive();
+                drive(rotate);
             } catch(Exception e) {
                 shutdown();
                 throw new RuntimeException(e);
@@ -65,7 +90,7 @@ public abstract class Chassis extends SubsystemBase implements HardwareComponent
     }
 
     /*The main driving method for every type of drivetrain*/
-    public abstract void drive();
+    public abstract void drive(boolean rotate);
 
     /*Making sure that driving is enabled before any drive code is called. For this example, depending on the type of drivetrain,
     * this method could be overridden to return true or false for things like if the drivetrain is having an issue, then return false,
